@@ -10,27 +10,15 @@ defmodule Pusher do
     Logger.debug "pushing series..."
     case result do
       {:ok, chan_result} ->
-        write_points(chan_result)
-        write_total(chan_result)
+        write_cdrs(chan_result)
     end
   end
 
-  def write_points(chan_result) do
+  def write_cdrs(chan_result) do
     series = Enum.map(chan_result, fn(x) -> parse_channels x end)
     # IO.inspect series
-    case series |> FsChannels.InConnection.write([async: true, precision: :seconds]) do
-      :ok ->
-        Logger.info "wrote " <> (Enum.count(series) |> Integer.to_string) <> " points"
-      {:error, :econnrefused} ->
-        Logger.error "error writing points"
-      _  ->
-        Logger.error "error writing points: #{inspect series}"
-    end
 
-    # data = %FSChannelsCampaignSeries{}
-    # data = %{ data | tags: %{ data.tags | campaign_id: 777 }}
-    # data = %{ data | fields:    %{ data.fields | value: 7 }}
-    # data |> FsChannels.InConnection.write()
+    # Write to PostgreSQL
   end
 
   def parse_channels(data) do
@@ -38,19 +26,6 @@ defmodule Pusher do
     serie = %{ serie | tags: %{ serie.tags | campaign_id: data[:campaign_id] }}
     serie = %{ serie | fields: %{ serie.fields | value: data[:count] }}
     serie
-  end
-
-  def write_total(chan_result) do
-    total = Enum.reduce(chan_result, 0, fn(x, acc) -> (x[:count]) end)
-    serie = %FSChannelsSeries{}
-    serie = %{ serie | fields: %{ serie.fields | value: total }}
-
-    case serie |> FsChannels.InConnection.write([async: true, precision: :seconds]) do
-      :ok ->
-        Logger.info "wrote total: #{total}"
-      _  ->
-        Logger.error "error writing total"
-    end
   end
 
   def push(item) do

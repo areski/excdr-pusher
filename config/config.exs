@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :fs_channels, key: :value
+#     config :excdr_pusher, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:fs_channels, :key)
+#     Application.get_env(:excdr_pusher, :key)
 #
 # Or configure a 3rd-party app:
 #
@@ -36,14 +36,14 @@ config :logger,
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
-  path: "/var/log/fs_channels/elixir-error.log",
+  path: "/var/log/excdr_pusher/elixir-error.log",
   level: :error,
   format: "$time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
 
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
-  path: "/var/log/fs_channels/elixir-debug.log",
+  path: "/var/log/excdr_pusher/elixir-debug.log",
   level: :debug,
   format: "$time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
@@ -56,13 +56,18 @@ config :logger, :debug_log,
 # config :logger, :console,
 #   format: "\n$time $metadata[$level] $levelpad$message\n"
 
-config :fs_channels,
-  sqlite_db: "/dev/shm/core.db",
-  # influxdatabase:  "newfiesdialer",
-  influxdatabase:  "newfiesdialer"
+config :excdr_pusher,
+  # Collect from
+  sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
+  # Push to
+  postgres_dbname: ""
+  postgres_host: ""
+  postgres_username: ""
+  postgres_password: ""
+  postgres_port: ""
 
 # InfluxDB configuration
-config :influxcon_app, FsChannels.InConnection,
+config :influxcon_app, ExCdrPusher.InConnection,
   host:      "localhost",
   # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
   pool:      [ max_overflow: 0, size: 1 ],

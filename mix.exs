@@ -1,8 +1,8 @@
-defmodule FsChannels.Mixfile do
+defmodule ExCdrPusher.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :fs_channels,
+    [app: :excdr_pusher,
      version: "0.1.2",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
@@ -20,7 +20,7 @@ defmodule FsChannels.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [applications: [:logger, :exrm, :swab, :sqlitex, :instream, :logger_file_backend, :exrm_deb],
-     mod: {FsChannels, []}]
+     mod: {ExCdrPusher, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -44,19 +44,19 @@ defmodule FsChannels.Mixfile do
     ]
   end
 
-  defp description, do: "Collect and push channels information from FreeSWITCH Sqlite to InfluxDB"
+  defp description, do: "Push FreeSWITCH CDRS from Sqlite to PostgreSQL"
 
   defp package do
     [
-      name: :fs_channels_influxdb,
+      name: :excdr_pusher,
       license_file: "LICENSE",
       external_dependencies: [],
       maintainers: ["Areski Belaid"],
       vendor: "Areski Belaid",
       licenses: ["MIT"],
       links: %{
-        "Github" => "https://github.com/areski/fs_channels_influxdb",
-        "Homepage" => "https://github.com/areski/fs_channels_influxdb"
+        "Github" => "https://github.com/areski/excdr-pusher",
+        "Homepage" => "https://github.com/areski/excdr-pusher"
       }
     ]
   end

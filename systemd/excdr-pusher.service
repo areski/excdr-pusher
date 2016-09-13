@@ -1,18 +1,19 @@
 [Unit]
 Description=Collect and push channels information from FreeSWITCH Sqlite CoreDB to InfluxDB
-Documentation=https://github.com/areski/fs_channels_influxdb
-After=network.target influxd.service freeswitch.service
+Documentation=https://github.com/areski/excdr-pusher
+After=network.target
 
 [Service]
 Type=forking
 TimeoutSec=120
 User=root
 Group=daemon
-Environment=MIX_ENV=prod PORT=8888
-ExecStart=/app/fs_channels/bin/fs_channels start
-ExecStop=/app/fs_channels/bin/fs_channels stop
+#
+Environment=MIX_ENV=prod PORT=8888 DB_HOST=127.0.0.1 DB_NAME=mydb DB_USER=myusername DB_PASSWORD=mypassword
+ExecStart=/app/excdr_pusher/bin/excdr_pusher start
+ExecStop=/app/excdr_pusher/bin/excdr_pusher stop
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
-Alias=fs_channels.service
+Alias=excdr_pusher.service

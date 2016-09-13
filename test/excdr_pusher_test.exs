@@ -1,6 +1,6 @@
-defmodule FsChannelsTest do
+defmodule ExCdrPusherTest do
   use ExUnit.Case
-  doctest FsChannels
+  doctest ExCdrPusher
 
   test "the truth" do
     assert 1 + 1 == 2
