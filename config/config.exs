@@ -60,21 +60,11 @@ config :excdr_pusher,
   # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
   # Push to
-  postgres_dbname: ""
-  postgres_host: ""
-  postgres_username: ""
-  postgres_password: ""
-  postgres_port: ""
-
-# InfluxDB configuration
-config :influxcon_app, ExCdrPusher.InConnection,
-  host:      "localhost",
-  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
-  pool:      [ max_overflow: 0, size: 1 ],
-  port:      8086,
-  scheme:    "http",
-  writer:    Instream.Writer.Line
-
+  postgres_dbname: "DBNAME",
+  postgres_host: "DBHOST",
+  postgres_username: "DBUSERNAME",
+  postgres_password: "DBPASSWORD",
+  postgres_port: "DBPORT"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

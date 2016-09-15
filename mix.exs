@@ -3,7 +3,7 @@ defmodule ExCdrPusher.Mixfile do
 
   def project do
     [app: :excdr_pusher,
-     version: "0.1.2",
+     version: "0.1.0",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -19,7 +19,7 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :exrm, :swab, :sqlitex, :instream, :logger_file_backend, :exrm_deb],
+    [applications: [:logger, :exrm, :swab, :sqlitex, :logger_file_backend, :exrm_deb],
      mod: {ExCdrPusher, []}]
   end
 
@@ -39,7 +39,6 @@ defmodule ExCdrPusher.Mixfile do
      {:exrm_deb, "~> 0.0.7"},
      {:sqlitex, "~> 1.0.0"},
      {:logger_file_backend, "0.0.7"},
-     {:instream, "~> 0.12"},
      {:swab, github: "crownedgrouse/swab", branch: "master"}
     ]
   end

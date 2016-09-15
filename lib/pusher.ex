@@ -6,27 +6,22 @@ defmodule Pusher do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def push_aggr_channel(result) do
-    Logger.debug "pushing series..."
+  def push_cdrs(result) do
+    Logger.debug "pushing cdrs..."
     case result do
-      {:ok, chan_result} ->
-        write_cdrs(chan_result)
+      {:ok, cdrs} ->
+        write_cdrs(cdrs)
     end
   end
 
-  def write_cdrs(chan_result) do
-    series = Enum.map(chan_result, fn(x) -> parse_channels x end)
+  def write_cdrs(cdrs) do
+    # series = Enum.map(chan_result, fn(x) -> parse_channels x end)
     # IO.inspect series
+    IO.inspect cdrs
 
     # Write to PostgreSQL
   end
 
-  def parse_channels(data) do
-    serie = %FSChannelsCampaignSeries{}
-    serie = %{ serie | tags: %{ serie.tags | campaign_id: data[:campaign_id] }}
-    serie = %{ serie | fields: %{ serie.fields | value: data[:count] }}
-    serie
-  end
 
   def push(item) do
     GenServer.cast(__MODULE__, {:push, item})
@@ -60,7 +55,4 @@ defmodule Pusher do
     {:noreply, [item | state]}
   end
 
-  # def handle_cast(request, state) do
-  #   super(request, state)
-  # end
 end

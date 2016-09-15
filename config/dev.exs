@@ -57,15 +57,17 @@ config :logger, :debug_log,
 #   format: "\n$time $metadata[$level] $levelpad$message\n"
 
 config :excdr_pusher,
-  sqlite_db: "/home/areski/private/bitbucket/newfies-dialer/playground/channels/coredb.sqlite",
-  # influxdatabase:  "newfiesdialer",
-  influxdatabase:  "newfiesdialer"
+  # Collect from
+  sqlite_db: "./data/freeswitchcdr.db",
+  # Push to
+  postgres_dbname: "newfiesdb",
+  postgres_host: "localhost",
+  postgres_username: "postgres",
+  postgres_password: "password",
+  postgres_port: "5432",
+  # Amount of CDRs to fetch every 6 seconds
+  amount_cdr_fetch: 1000
 
-# InfluxDB configuration
-config :influxcon_app, ExCdrPusher.InConnection,
-  host:      "influxdb_host",
-  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
-  pool:      [ max_overflow: 0, size: 1 ],
-  port:      8086,
-  scheme:    "http",
-  writer:    Instream.Writer.Line
+
+#If you need to load configuration from the environment at runtime, you will need to do something like the following:
+# my_setting = Application.get_env(:myapp, :setting) || System.get_env("MY_SETTING") || default_val

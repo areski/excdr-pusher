@@ -48,24 +48,12 @@ config :logger, :debug_log,
   format: "$time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
 
-
-# config :logger,
-#   backends: [:console],
-#   compile_time_purge_level: :debug
-
-# config :logger, :console,
-#   format: "\n$time $metadata[$level] $levelpad$message\n"
-
 config :excdr_pusher,
-  sqlite_db: "/dev/shm/core.db",
-  # influxdatabase:  "newfiesdialer",
-  influxdatabase:  "newfiesdialer"
-
-# InfluxDB configuration
-config :influxcon_app, ExCdrPusher.InConnection,
-  host:      "influxdb_host",
-  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
-  pool:      [ max_overflow: 0, size: 1 ],
-  port:      8086,
-  scheme:    "http",
-  writer:    Instream.Writer.Line
+  # Collect from
+  sqlite_db: "./data/freeswitchcdr.db",
+  # Push to
+  postgres_dbname: "DBNAME",
+  postgres_host: "DBHOST",
+  postgres_username: "DBUSERNAME",
+  postgres_password: "DBPASSWORD",
+  postgres_port: "DBPORT"
