@@ -37,7 +37,8 @@ defmodule ExCdrPusher.Mixfile do
      {:ex_doc, "~> 0.13.0", only: :dev},
      {:exrm, "~> 1.0.8"},
      {:exrm_deb, "~> 0.0.7"},
-     {:sqlitex, "~> 1.0.0"},
+     {:sqlitex, "~> 1.0.1"},
+     # {:sqlitex, path: "../sqlitex"},
      {:logger_file_backend, "0.0.7"},
      {:swab, github: "crownedgrouse/swab", branch: "master"}
     ]

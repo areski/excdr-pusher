@@ -1,24 +1,24 @@
-defmodule PusherTest do
+defmodule SqliteCDRTest do
   use ExUnit.Case, async: true
 
-  # setup do
-  #   {:ok, genserver} = Pusher.start_link([])
-  #   {:ok, genserver: genserver}
-  # end
 
-  # test "spawns buckets", %{genserver: genserver} do
-  test "already start genserver" do
-    assert Pusher.lookup("shopping") == :error
-
-    assert Pusher.push("hello") == :ok
-
-    assert Pusher.pop() == "hello"
-
-
-    # Pusher.create(genserver, "shopping")
-    # assert {:ok, bucket} = Pusher.lookup(genserver, "shopping")
-
-    # KV.Bucket.put(bucket, "milk", 1)
-    # assert KV.Bucket.get(bucket, "milk") == 1
+  setup_all do
+    {:ok, db} = Sqlitex.open('./data/freeswitchcdr.db')
+    on_exit fn ->
+      Sqlitex.close(db)
+    end
+    # {:ok, testsqlite_db: TestDatabase.init(db)}
+    {:ok, testsqlite_db: db}
   end
+
+  test "a basic query returns a list of CDRs", context do
+    # {:ok, [row]} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 1")
+    {:ok, [row]} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 1")
+    assert row[:caller_id_name] == "Outbound Call"
+    # Fetch 2 records
+    {:ok, rows} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 2")
+    assert length(rows) == 2
+    # assert row == [id: 1, name: "Mikey", created_at: {{2012,10,14},{05,46,28,318107}}, updated_at: {{2013,09,06},{22,29,36,610911}}, type: nil]
+  end
+
 end
