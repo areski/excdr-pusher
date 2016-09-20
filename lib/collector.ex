@@ -8,6 +8,8 @@ defmodule Collector do
 
   def init(state) do
     Logger.debug "[init] we will collect cdrs information from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+    # Create field
+    add_cdr_field_imported()
     Process.send_after(self(), :timeout_1, 1 * 1000) # 1 sec
     {:ok, state}
   end
@@ -41,8 +43,8 @@ defmodule Collector do
       {:ok, []} ->
         Logger.info "cdrs is empty []"
       {:ok, _} ->
-        Logger.info "pushing CDRs... TODO"
-        IO.inspect cdrs
+        Logger.debug "pushing CDRs..."
+        mark_cdr_imported(cdrs)
         # TODO
         # Pusher.push_cdrs(cdrs)
     end
@@ -51,10 +53,41 @@ defmodule Collector do
   defp get_cdrs() do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
-        Sqlitex.query(db, "SELECT * FROM cdr;")
+        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 LIMIT ?;"
+        # IO.puts "fetchsql:" <> fetchsql
+        Sqlitex.query(db, fetchsql, bind: [Application.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
       {:error, reason} ->
         Logger.error reason
         {:error}
+    end
+  end
+
+  defp add_cdr_field_imported() do
+    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+      {:ok, db} ->
+        Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
+        IO.puts "CREATE INDEX..."
+        Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
+      {:error, reason} ->
+        Logger.error reason
+        {:error}
+    end
+  end
+
+  defp mark_cdr_imported(cdrs) do
+    case cdrs do
+      {:ok, listcdr} ->
+        Logger.debug "Fetched CDRs: #{length(listcdr)}"
+        ids = Enum.map(listcdr, fn(x) -> x[:rowid] end)
+        questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
+        updatesql = "UPDATE cdr SET imported=1 WHERE imported=0 and OID IN (" <> questmarks <> ")"
+        case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+          {:ok, db} ->
+            Sqlitex.query(db, updatesql, bind: ids)
+          {:error, reason} ->
+            Logger.error reason
+            {:error}
+        end
     end
   end
 

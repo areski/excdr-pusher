@@ -66,7 +66,8 @@ config :excdr_pusher,
   postgres_password: "password",
   postgres_port: "5432",
   # Amount of CDRs to fetch every 6 seconds
-  amount_cdr_fetch: 1000
+  # amount_cdr_fetch: 1000
+  amount_cdr_fetch: 2
 
 
 #If you need to load configuration from the environment at runtime, you will need to do something like the following:
