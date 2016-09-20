@@ -50,10 +50,12 @@ config :logger, :debug_log,
 
 config :excdr_pusher,
   # Collect from
-  sqlite_db: "./data/freeswitchcdr.db",
+  sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
   # Push to
   postgres_dbname: "DBNAME",
   postgres_host: "DBHOST",
   postgres_username: "DBUSERNAME",
   postgres_password: "DBPASSWORD",
-  postgres_port: "DBPORT"
+  postgres_port: "DBPORT",
+  # Amount of CDRs to fetch every 6 seconds
+  amount_cdr_fetch: 1000

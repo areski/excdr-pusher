@@ -17,9 +17,12 @@ defmodule Pusher do
   def write_cdrs(cdrs) do
     # series = Enum.map(chan_result, fn(x) -> parse_channels x end)
     # IO.inspect series
+    IO.puts "write_cdrs"
     IO.inspect cdrs
-
     # Write to PostgreSQL
+
+    # Error to write CDRs
+    Collector.rollback_cdr_imported({:ok, cdrs})
   end
 
 

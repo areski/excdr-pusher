@@ -57,15 +57,13 @@ config :logger, :debug_log,
 #   format: "\n$time $metadata[$level] $levelpad$message\n"
 
 config :excdr_pusher,
-  sqlite_db: "/dev/shm/core.db",
-  # influxdatabase:  "newfiesdialer",
-  influxdatabase:  "newfiesdialer"
-
-# InfluxDB configuration
-config :influxcon_app, ExCdrPusher.InConnection,
-  host:      "localhost",
-  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
-  pool:      [ max_overflow: 0, size: 1 ],
-  port:      8086,
-  scheme:    "http",
-  writer:    Instream.Writer.Line
+  # Collect from
+  sqlite_db: "./data/freeswitchcdr-test.db",
+  # Push to
+  postgres_dbname: "DBNAME",
+  postgres_host: "DBHOST",
+  postgres_username: "DBUSERNAME",
+  postgres_password: "DBPASSWORD",
+  postgres_port: "DBPORT",
+  # Amount of CDRs to fetch every 6 seconds
+  amount_cdr_fetch: 1000

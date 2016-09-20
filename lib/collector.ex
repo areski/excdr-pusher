@@ -46,7 +46,7 @@ defmodule Collector do
         Logger.debug "pushing CDRs..."
         mark_cdr_imported(cdrs)
         # TODO
-        # Pusher.push_cdrs(cdrs)
+        Pusher.push_cdrs(cdrs)
     end
   end
 
@@ -74,13 +74,28 @@ defmodule Collector do
     end
   end
 
-  defp mark_cdr_imported(cdrs) do
+  defp mark_cdr_imported(cdrs), do: mark_cdr(cdrs, 1)
+
+  # mark CDRs as not imported, used when errors occur on the push CDRs to PG
+  def rollback_cdr_imported(cdrs), do: mark_cdr(cdrs, 0)
+
+  defp querymarkcdr(imported) do
+    case imported do
+     1 -> "UPDATE cdr SET imported=1 WHERE imported=0"
+     0 -> "UPDATE cdr SET imported=0 WHERE imported=1"
+   end
+  end
+
+  # Genereric function to mark CDRs
+  defp mark_cdr(cdrs, imported) do
     case cdrs do
       {:ok, listcdr} ->
-        Logger.debug "Fetched CDRs: #{length(listcdr)}"
+        Logger.debug "Mark CDRs: #{length(listcdr)}"
         ids = Enum.map(listcdr, fn(x) -> x[:rowid] end)
         questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
-        updatesql = "UPDATE cdr SET imported=1 WHERE imported=0 and OID IN (" <> questmarks <> ")"
+        updatesql = querymarkcdr(imported) <> " AND OID IN (" <> questmarks <> ")"
+        IO.puts updatesql
+        IO.inspect ids
         case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
           {:ok, db} ->
             Sqlitex.query(db, updatesql, bind: ids)
