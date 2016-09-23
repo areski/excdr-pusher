@@ -19,7 +19,7 @@ newfies_dialer_db=# \d dialer_cdr
  hangup_cause_q850 | character varying(10)    |
  leg_type          | smallint                 |
  amd_status        | smallint                 |
- callrequest_id    | integer                  |
+ callrequest       | integer                  |
  used_gateway_id   | integer                  |
  user_id           | integer                  | not null
  billed_duration   | integer                  | not null
@@ -27,11 +27,9 @@ newfies_dialer_db=# \d dialer_cdr
 Indexes:
     "dialer_cdr_pkey" PRIMARY KEY, btree (id)
     "dialer_cdr_11a584c4" btree (starting_date)
-    "dialer_cdr_14998e88" btree (callrequest_id)
     "dialer_cdr_dcadeff8" btree (used_gateway_id)
     "dialer_cdr_e8701ad4" btree (user_id)
 Foreign-key constraints:
-    "dialer_cdr_callrequest_id_71a92509_fk_dialer_callrequest_id" FOREIGN KEY (callrequest_id) REFERENCES dialer_callrequest(id) DEFERRABLE INITIALLY DEFERRED
     "dialer_cdr_used_gateway_id_d643c2e9_fk_dialer_gateway_id" FOREIGN KEY (used_gateway_id) REFERENCES dialer_gateway(id) DEFERRABLE INITIALLY DEFERRED
     "dialer_cdr_user_id_e0635e5e_fk_auth_user_id" FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED
 
@@ -55,7 +53,6 @@ hangup_cause      | USER_BUSY
 hangup_cause_q850 |
 leg_type          | 1
 amd_status        | 1
-callrequest_id    | 1681
 used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
@@ -77,7 +74,6 @@ hangup_cause      | USER_BUSY
 hangup_cause_q850 |
 leg_type          | 1
 amd_status        | 1
-callrequest_id    | 1681
 used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
@@ -99,7 +95,6 @@ hangup_cause      | NORMAL_TEMPORARY_FAILURE
 hangup_cause_q850 |
 leg_type          | 2
 amd_status        | 1
-callrequest_id    | 1681
 used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
@@ -121,7 +116,6 @@ hangup_cause      | NORMAL_CLEARING
 hangup_cause_q850 |
 leg_type          | 1
 amd_status        | 1
-callrequest_id    | 1681
 used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 12

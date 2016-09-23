@@ -22,7 +22,7 @@ defmodule Collector do
 
   defp schedule_task() do
     # IO.puts "schedule_task..."
-    Process.send_after(self(), :timeout_1, 6 * 1000) # 6 seconds
+    Process.send_after(self(), :timeout_1, 1 * 1000) # 1 sec
 
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       # Dispatch Task
@@ -53,7 +53,7 @@ defmodule Collector do
   defp get_cdrs() do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
-        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 LIMIT ?;"
+        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
         # IO.puts "fetchsql:" <> fetchsql
         Sqlitex.query(db, fetchsql, bind: [Application.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
       {:error, reason} ->
@@ -66,7 +66,6 @@ defmodule Collector do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
-        IO.puts "CREATE INDEX..."
         Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
       {:error, reason} ->
         Logger.error reason
@@ -94,8 +93,7 @@ defmodule Collector do
         ids = Enum.map(listcdr, fn(x) -> x[:rowid] end)
         questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
         updatesql = querymarkcdr(imported) <> " AND OID IN (" <> questmarks <> ")"
-        IO.puts updatesql
-        IO.inspect ids
+        # IO.puts updatesql
         case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
           {:ok, db} ->
             Sqlitex.query(db, updatesql, bind: ids)
@@ -103,6 +101,20 @@ defmodule Collector do
             Logger.error reason
             {:error}
         end
+    end
+  end
+
+  # Genereric function to mark CDRs
+  defp mark_cdr_notimported(rowid) do
+    Logger.error "CDR not imported rowid:#{rowid}"
+    updatesql = "UPDATE cdr SET imported=0 WHERE imported=1 AND OID=?"
+    # IO.puts updatesql
+    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+      {:ok, db} ->
+        Sqlitex.query(db, updatesql, bind: rowid)
+      {:error, reason} ->
+        Logger.error reason
+        {:error}
     end
   end
 

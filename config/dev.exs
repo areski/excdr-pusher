@@ -65,8 +65,8 @@ config :excdr_pusher,
   postgres_username: "postgres",
   postgres_password: "password",
   postgres_port: "5432",
-  # Amount of CDRs to fetch every 6 seconds
-  # amount_cdr_fetch: 1000
+  # Amount of CDRs to fetch every second
+  # amount_cdr_fetch: 100
   amount_cdr_fetch: 2
 
 
