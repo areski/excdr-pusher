@@ -59,11 +59,10 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./data/freeswitchcdr-test.db",
-  # Push to
-  postgres_dbname: "DBNAME",
-  postgres_host: "DBHOST",
-  postgres_username: "DBUSERNAME",
-  postgres_password: "DBPASSWORD",
-  postgres_port: "DBPORT",
   # Amount of CDRs to fetch every second
   amount_cdr_fetch: 100
+
+# Push to
+config :excdr_pusher, ExCdrPusher.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME"

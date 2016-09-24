@@ -19,7 +19,7 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :exrm, :swab, :sqlitex, :postgrex, :logger_file_backend, :exrm_deb],
+    [applications: [:logger, :exrm, :swab, :sqlitex, :postgrex, :ecto, :logger_file_backend, :exrm_deb],
      mod: {ExCdrPusher, []}]
   end
 
@@ -38,8 +38,9 @@ defmodule ExCdrPusher.Mixfile do
      {:exrm, "~> 1.0.8"},
      {:exrm_deb, "~> 0.0.7"},
      {:sqlitex, "~> 1.0.1"},
-     {:postgrex, "~> 0.12.0"},
      # {:sqlitex, path: "../sqlitex"},
+     {:postgrex, ">= 0.0.0"},
+     {:ecto, "~> 2.0.5"},
      {:logger_file_backend, "0.0.7"},
      {:swab, github: "crownedgrouse/swab", branch: "master"}
     ]

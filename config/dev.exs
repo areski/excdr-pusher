@@ -59,16 +59,14 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./data/freeswitchcdr.db",
-  # Push to
-  postgres_dbname: "newfiesdb",
-  postgres_host: "localhost",
-  postgres_username: "postgres",
-  postgres_password: "password",
-  postgres_port: "5432",
   # Amount of CDRs to fetch every second
   # amount_cdr_fetch: 100
   amount_cdr_fetch: 2
 
+# Push to
+config :excdr_pusher, ExCdrPusher.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  url: "postgres://postgres:password@localhost/newfiesdb"
 
 #If you need to load configuration from the environment at runtime, you will need to do something like the following:
 # my_setting = Application.get_env(:myapp, :setting) || System.get_env("MY_SETTING") || default_val

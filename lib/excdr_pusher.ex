@@ -10,6 +10,7 @@ defmodule ExCdrPusher do
     children = [
       # Starts a worker by calling: ExCdrPusher.Worker.start_link(arg1, arg2, arg3)
       # worker(ExCdrPusher.Worker, [arg1, arg2, arg3]),
+      supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
       # worker(Pusher, [[], [name: MyPusher]]),
       worker(Pusher, [0]),

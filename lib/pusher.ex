@@ -1,6 +1,8 @@
 defmodule Pusher do
   use GenServer
   require Logger
+  alias ExCdrPusher.Repo
+  alias ExCdrPusher.CDR
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -15,42 +17,33 @@ defmodule Pusher do
   end
 
   def write_cdrs(cdrs) do
-    Collector.rollback_cdr_imported({:ok, cdrs})
-    Logger.debug "write_cdrs..."
-    # Rollback all CDRs (Not used as we will handle error one by one)
-    {:ok, pid} = Postgrex.start_link(hostname: "localhost2", username: "postgres",
-                                     password: "password", database: "newfiesdb",
-                                     backoff_type: :stop)
-    # msg = Postgrex.start_link(hostname: "localhost2", username: "postgres",
-    #                                  password: "password", database: "newfiesdb",
-    #                                  backoff_type: :stop)
-
-    # IO.inspect msg
-    # {:ok, %Postgrex.Result{}} = Postgrex.query(pid, "SELECT 123", [])
-    # IO.inspect cdrs
     # Write to PostgreSQL
-    # results = Enum.map(cdrs, fn(x) -> insert_cdr(pid, x) end)
-
+    results = Enum.map(cdrs, fn(x) -> insert_cdr(x) end)
   end
 
-  def insert_cdr(pid, cdr) do
+  def insert_cdr(cdr) do
     IO.puts "----------------------------------------"
     IO.puts "insert_cdr"
 
+    # TODO: break down into single function (more readable and easy to test)
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed} = sanitize_cdr_data(cdr)
+    disposition = get_disposition(cdr[:hangup_cause])
 
-    res = Postgrex.query!(pid,
-      "INSERT INTO dialer_cdr22 (callid, callerid, phone_number, starting_date, duration, billsec, disposition, hangup_cause, hangup_cause_q850, leg_type, amd_status, callrequest, used_gateway_id, user_id, billed_duration, call_cost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)",
-      [cdr[:uuid], cdr[:caller_id_number], cdr[:destination_number], cdrdate, cdr[:duration], cdr[:billsec], cdr[:hangup_cause], cdr[:hangup_cause], Integer.to_string(cdr[:hangup_cause_q850]), legtype, amd_status, cdr[:callrequest_id], cdr[:used_gateway_id], cdr[:user_id], billed_duration, nibble_total_billed])
+    newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: Integer.to_string(cdr[:hangup_cause_q850]), leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: cdr[:user_id], billed_duration: billed_duration, call_cost: nibble_total_billed}
+    resinsert = Repo.insert!(newcdr)
 
-    IO.inspect res
-    case res do
-      %Postgrex.Result{ num_rows: 1} -> IO.puts "ALL GOOD!"
-      :error -> IO.puts "AIE AIE!!!"
+    IO.inspect resinsert
+    case resinsert do
+      %CDR{id: pg_cdr_id} ->
+        IO.puts "CDR ID!"
+        IO.puts pg_cdr_id
+        Collector.mark_cdr_imported(cdr[:rowid], pg_cdr_id)
+      {:error, err} ->
+        IO.inspect err
+      _ ->
+        IO.puts "Something unexpected!"
     end
 
-    # %Postgrex.Result{num_rows: 1}
-    # %Postgrex.Result{command: :insert, columns: nil, rows: nil, num_rows: 1}}
   end
 
   # calculate billed_duration using billsec & billing increment
@@ -62,7 +55,31 @@ defmodule Pusher do
         round(Float.ceil(billsec / increment) * increment)
       end
     else
-      billsec
+      if billsec > 0 do
+        billsec
+      else
+        0
+      end
+    end
+  end
+
+  # transform disposition
+  defp get_disposition(hangup_cause) do
+    case hangup_cause do
+      "NORMAL_CLEARING" ->
+        "ANSWER"
+      "ALLOTTED_TIMEOUT" ->
+        "ANSWER"
+      "USER_BUSY" ->
+        "BUSY"
+      "NO_ANSWER" ->
+        "NOANSWER"
+      "ORIGINATOR_CANCEL" ->
+        "CANCEL"
+      "NORMAL_CIRCUIT_CONGESTION" ->
+        "CONGESTION"
+      _ ->
+        "FAILED"
     end
   end
 
@@ -72,7 +89,7 @@ defmodule Pusher do
     # We will clean and sanitize some field coming from Sqlite and prepare them PostgreSQL
     billed_duration = calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
     {{year, month, day}, {hour, min, sec, 0}} = cdr[:start_stamp]
-    cdrdate = %Postgrex.Timestamp{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
+    cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
     legtype = case Integer.parse(cdr[:legtype]) do
       :error -> 1
       {intparse, _} -> intparse
