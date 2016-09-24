@@ -1,8 +1,10 @@
 defmodule Pusher do
   use GenServer
   require Logger
+
   alias ExCdrPusher.Repo
   alias ExCdrPusher.CDR
+  alias ExCdrPusher.Utils
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -22,88 +24,37 @@ defmodule Pusher do
   end
 
   def insert_cdr(cdr) do
-    IO.puts "----------------------------------------"
-    IO.puts "insert_cdr"
-
     # TODO: break down into single function (more readable and easy to test)
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed} = sanitize_cdr_data(cdr)
-    disposition = get_disposition(cdr[:hangup_cause])
+    disposition = Utils.get_disposition(cdr[:hangup_cause])
+    # TODO Sanitize hangup_cause_q850 -> convertstringdefault ""
+    # hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
+    hangup_cause_q850 = ""
 
-    newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: Integer.to_string(cdr[:hangup_cause_q850]), leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: cdr[:user_id], billed_duration: billed_duration, call_cost: nibble_total_billed}
-    resinsert = Repo.insert!(newcdr)
+    newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: hangup_cause_q850, leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: cdr[:user_id], billed_duration: billed_duration, call_cost: nibble_total_billed}
+    result = Repo.insert!(newcdr)
 
-    IO.inspect resinsert
-    case resinsert do
+    case result do
       %CDR{id: pg_cdr_id} ->
-        IO.puts "CDR ID!"
-        IO.puts pg_cdr_id
+        Logger.debug "PG_CDR_ID -> #{pg_cdr_id}"
         Collector.mark_cdr_imported(cdr[:rowid], pg_cdr_id)
       {:error, err} ->
-        IO.inspect err
+        Logger.error err
       _ ->
-        IO.puts "Something unexpected!"
+        Logger.error "Pusher: something unexpected"
     end
 
-  end
-
-  # calculate billed_duration using billsec & billing increment
-  defp calculate_billdur(billsec, increment) do
-    if increment > 0 and billsec > 0 do
-      if billsec < increment do
-        increment
-      else
-        round(Float.ceil(billsec / increment) * increment)
-      end
-    else
-      if billsec > 0 do
-        billsec
-      else
-        0
-      end
-    end
-  end
-
-  # transform disposition
-  defp get_disposition(hangup_cause) do
-    case hangup_cause do
-      "NORMAL_CLEARING" ->
-        "ANSWER"
-      "ALLOTTED_TIMEOUT" ->
-        "ANSWER"
-      "USER_BUSY" ->
-        "BUSY"
-      "NO_ANSWER" ->
-        "NOANSWER"
-      "ORIGINATOR_CANCEL" ->
-        "CANCEL"
-      "NORMAL_CIRCUIT_CONGESTION" ->
-        "CONGESTION"
-      _ ->
-        "FAILED"
-    end
   end
 
   # prepare & sanitize CDR data
   defp sanitize_cdr_data(cdr) do
-    IO.inspect cdr
     # We will clean and sanitize some field coming from Sqlite and prepare them PostgreSQL
-    billed_duration = calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
+    billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
     {{year, month, day}, {hour, min, sec, 0}} = cdr[:start_stamp]
     cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
-    legtype = case Integer.parse(cdr[:legtype]) do
-      :error -> 1
-      {intparse, _} -> intparse
-    end
-    # convert amd_status to integer
-    amd_status = case Integer.parse(cdr[:amd_status]) do
-      :error -> 0
-      {intparse, _} -> intparse
-    end
-    # convert nibble_total_billed to Floats
-    nibble_total_billed = case Float.parse(cdr[:nibble_total_billed]) do
-      :error -> 0.0
-      {floatparse, _} -> floatparse
-    end
+    legtype = Utils.convertintdefault(cdr[:legtype], 1)
+    amd_status = Utils.convertintdefault(cdr[:amd_status], 0)
+    nibble_total_billed = Utils.convertfloatdefault(cdr[:nibble_total_billed], 0.0)
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed}
   end
 
