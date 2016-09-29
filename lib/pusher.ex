@@ -27,8 +27,9 @@ defmodule Pusher do
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed} = sanitize_cdr_data(cdr)
     disposition = Utils.get_disposition(cdr[:hangup_cause])
     hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
+    user_id = sanitize_user_id(cdr[:user_id])
 
-    newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: hangup_cause_q850, leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: cdr[:user_id], billed_duration: billed_duration, call_cost: nibble_total_billed}
+    newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: hangup_cause_q850, leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: user_id, billed_duration: billed_duration, call_cost: nibble_total_billed}
     result = Repo.insert!(newcdr)
 
     case result do
@@ -42,6 +43,12 @@ defmodule Pusher do
     end
 
   end
+
+  # Sanitize User ID
+  defp sanitize_user_id(user_id) when user_id=="" do
+    1
+  end
+  defp sanitize_user_id(user_id), do: user_id
 
   # prepare & sanitize CDR data
   defp sanitize_cdr_data(cdr) do
