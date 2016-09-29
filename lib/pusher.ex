@@ -24,12 +24,9 @@ defmodule Pusher do
   end
 
   def insert_cdr(cdr) do
-    # TODO: break down into single function (more readable and easy to test)
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed} = sanitize_cdr_data(cdr)
     disposition = Utils.get_disposition(cdr[:hangup_cause])
-    # TODO Sanitize hangup_cause_q850 -> convertstringdefault ""
-    # hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
-    hangup_cause_q850 = ""
+    hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
 
     newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: hangup_cause_q850, leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: cdr[:user_id], billed_duration: billed_duration, call_cost: nibble_total_billed}
     result = Repo.insert!(newcdr)

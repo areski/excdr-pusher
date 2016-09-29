@@ -3,7 +3,6 @@ defmodule ExCdrPusher.CDR do
 
   # dialer_cdr is the DB table
   schema "dialer_cdr" do
-    field :request_uuid,      :string, default: ""
     field :callid,            :string
     field :callerid,          :string
     field :phone_number,      :string
@@ -12,7 +11,7 @@ defmodule ExCdrPusher.CDR do
     field :billsec,           :integer, default: 0
     field :disposition,       :string
     field :hangup_cause,      :string
-    field :hangup_cause_q850, :string
+    field :hangup_cause_q850, :integer, default: 0
     field :leg_type,          :integer
     field :amd_status,        :integer
     field :callrequest,       :integer
