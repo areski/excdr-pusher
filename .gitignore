@@ -22,3 +22,6 @@ erl_crash.dump
 #custom
 config/private.exs%
 release-me.sh
+
+#private
+/private
