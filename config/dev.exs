@@ -44,7 +44,7 @@ config :logger, :error_log,
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
   path: "/var/log/excdr_pusher/elixir-debug.log",
-  level: :debug,
+  level: :info,
   format: "$time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
 
@@ -61,7 +61,7 @@ config :excdr_pusher,
   sqlite_db: "./private/freeswitchcdr.db",
   # Amount of CDRs to fetch every second
   # amount_cdr_fetch: 100
-  amount_cdr_fetch: 2
+  amount_cdr_fetch: 100
 
 # Push to
 config :excdr_pusher, ExCdrPusher.Repo,

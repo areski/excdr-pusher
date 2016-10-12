@@ -14,16 +14,17 @@ defmodule Pusher do
     Logger.debug "pushing cdrs..."
     case result do
       {:ok, cdrs} ->
-        write_cdrs(cdrs)
+        # Write to PostgreSQL
+        results = Enum.map(cdrs, fn(x) -> insert_cdr(x) end)
     end
+
+    # ??????????????
+    Mark all imported or not imported
   end
 
-  def write_cdrs(cdrs) do
-    # Write to PostgreSQL
-    results = Enum.map(cdrs, fn(x) -> insert_cdr(x) end)
-  end
-
+  # Insert single CDR
   def insert_cdr(cdr) do
+    # Sanitize CDR data
     {billed_duration, cdrdate, legtype, amd_status, nibble_total_billed} = sanitize_cdr_data(cdr)
     disposition = Utils.get_disposition(cdr[:hangup_cause])
     hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
@@ -31,7 +32,9 @@ defmodule Pusher do
 
     newcdr = %CDR{callid: cdr[:uuid], callerid: cdr[:caller_id_number], phone_number: cdr[:destination_number], starting_date: cdrdate, duration: cdr[:duration], billsec: cdr[:billsec], disposition: disposition, hangup_cause: cdr[:hangup_cause], hangup_cause_q850: hangup_cause_q850, leg_type: legtype, amd_status: amd_status, callrequest: cdr[:callrequest_id], used_gateway_id: cdr[:used_gateway_id], user_id: user_id, billed_duration: billed_duration, call_cost: nibble_total_billed}
     result = Repo.insert!(newcdr)
+    Logger.info "PG CDR inserted..."
 
+    #
     case result do
       %CDR{id: pg_cdr_id} ->
         Logger.debug "PG_CDR_ID -> #{pg_cdr_id}"
@@ -45,10 +48,9 @@ defmodule Pusher do
   end
 
   # Sanitize User ID
-  defp sanitize_user_id(user_id) when user_id=="" do
-    1
+  defp sanitize_user_id(user_id) do
+    if (user_id == ""), do: 1, else: user_id
   end
-  defp sanitize_user_id(user_id), do: user_id
 
   # prepare & sanitize CDR data
   defp sanitize_cdr_data(cdr) do

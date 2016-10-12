@@ -74,7 +74,7 @@ defmodule Collector do
 
   # Genereric function to mark CDRs
   def mark_cdr_imported(rowid, pg_cdr_id) do
-    Logger.debug "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
+    Logger.info "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
     updatesql = "UPDATE cdr SET imported=1, pg_cdr_id=? WHERE OID=?"
     # IO.puts updatesql
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
