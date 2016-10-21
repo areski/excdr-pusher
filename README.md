@@ -45,5 +45,6 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 List of improvements and tasks,
 
+- [ ] Fix performance (concurrent read/write of CDRs not blocking)
 - [ ] use [conform](https://github.com/bitwalker/conform) to support config file
 - [ ] install script to quickly deploy
