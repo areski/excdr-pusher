@@ -7,20 +7,6 @@ defmodule ExCdrPusher.Sanitizer do
   """
 
   @doc """
-  Sanitize User ID
-
-  ## Examples
-
-    iex> ExCdrPusher.Sanitizer.user_id("")
-    1
-    iex> ExCdrPusher.Sanitizer.user_id(1234)
-    1234
-  """
-  def user_id(user_id) do
-    if (user_id == ""), do: 1, else: user_id
-  end
-
-  @doc """
   Prepare and sanitize CDR data.
 
   We will clean and sanitize data coming from Sqlite and prepare them for PostgreSQL insertion.
@@ -54,6 +40,20 @@ defmodule ExCdrPusher.Sanitizer do
       hangup_cause_q850: hangup_cause_q850,
       user_id: user_id,
     }
+  end
+
+  @doc """
+  Sanitize User ID
+
+  ## Examples
+
+    iex> ExCdrPusher.Sanitizer.user_id("")
+    1
+    iex> ExCdrPusher.Sanitizer.user_id(1234)
+    1234
+  """
+  def user_id(user_id) do
+    if (user_id == ""), do: 1, else: user_id
   end
 
 end

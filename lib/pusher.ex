@@ -21,6 +21,7 @@ defmodule Pusher do
   def insert_cdr(cdr) do
     clean_cdr = Sanitizer.cdr(cdr)
     # maybe we could move construction of %CDR to Sanitizer.cdr and kind of sanitize all the fields
+    # so we use clean_cdr[:field_name_xy] everywhere
 
     newcdr = %CDR{
       callid: cdr[:uuid],
@@ -46,9 +47,9 @@ defmodule Pusher do
     case result do
       %CDR{id: pg_cdr_id} ->
         Logger.info "PG_CDR_ID -> #{pg_cdr_id}"
-        Collector.mark_cdr_pg_cdr_id(cdr[:rowid], pg_cdr_id)
+        Collector.update_cdr_ok(cdr[:rowid], pg_cdr_id)
       {:error, err} ->
-        Collector.mark_cdr_error(cdr[:rowid])
+        Collector.update_cdr_error(cdr[:rowid])
         Logger.error err
     end
     {:ok, 1}
