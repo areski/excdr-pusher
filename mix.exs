@@ -19,7 +19,7 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :exrm, :swab, :sqlitex, :postgrex, :ecto, :logger_file_backend, :exrm_deb],
+    [applications: [:logger, :exrm, :swab, :sqlitex, :instream, :postgrex, :ecto, :logger_file_backend, :exrm_deb],
      mod: {ExCdrPusher, []}]
   end
 
@@ -43,11 +43,12 @@ defmodule ExCdrPusher.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.0.5"},
      {:logger_file_backend, "0.0.7"},
+     {:instream, "~> 0.12"},
      {:swab, github: "crownedgrouse/swab", branch: "master"}
     ]
   end
 
-  defp description, do: "Push FreeSWITCH CDRS from Sqlite to PostgreSQL"
+  defp description, do: "Push FreeSWITCH CDRS from Sqlite to PostgreSQL & InfluxDB"
 
   defp package do
     [

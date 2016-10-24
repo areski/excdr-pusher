@@ -1,7 +1,7 @@
 # Push FreeSWITCH CDRs to PostgreSQL [![Build Status](https://travis-ci.org/areski/excdr-pusher.svg?branch=master)](https://travis-ci.org/areski/excdr_pusher_influxdb)
 
 
-Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to PostgreSQL.
+Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to PostgreSQL and to InfluxDB.
 
 
 ## Installation
@@ -30,6 +30,12 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     mkdir /var/log/excdr_pusher
     ```
 
+  4. Add host in your `/etc/hosts` eg:
+
+    ```
+    127.0.0.1     influxdb_host
+    ```
+
 ## Start on reboot
 
   Add excdr_pusher to `systemd` on Debian 8.x:
@@ -45,6 +51,5 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 List of improvements and tasks,
 
-- [ ] Fix performance (concurrent read/write of CDRs not blocking)
 - [ ] use [conform](https://github.com/bitwalker/conform) to support config file
 - [ ] install script to quickly deploy

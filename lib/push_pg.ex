@@ -1,4 +1,4 @@
-defmodule Pusher do
+defmodule PusherPG do
   use GenServer
   require Logger
 

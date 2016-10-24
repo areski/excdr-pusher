@@ -12,10 +12,11 @@ defmodule ExCdrPusher do
       # worker(ExCdrPusher.Worker, [arg1, arg2, arg3]),
       supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
-      # worker(Pusher, [[], [name: MyPusher]]),
-      worker(Pusher, [0]),
+      worker(PusherPG, [0]),
+      worker(PushInfluxDB, [0]),
       # We dont use `Sqlitex.Server` as it's not possible to catch errors on reading/opening the database
       # worker(Sqlitex.Server, [Application.fetch_env!(:excdr_pusher, :sqlite_db), [name: Sqlitex.Server]]),
+      ExCdrPusher.InConnection.child_spec,
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

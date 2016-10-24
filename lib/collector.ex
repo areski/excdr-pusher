@@ -45,13 +45,15 @@ defmodule Collector do
     Logger.info "start_pushing_cdr:"
     sqlite_update_many_cdr(cdr_list)
     # Push To PostgreSQL
-    Pusher.push(cdr_list)
+    PusherPG.push(cdr_list)
+    # Push To InfluxDB
+    PushInfluxDB.push(cdr_list)
   end
 
   # def push_singlecdr(result) do
   #   case result do
   #     {:ok, cdrs} ->
-  #       results = Enum.map(cdrs, &Pusher.push/1)
+  #       results = Enum.map(cdrs, &PusherPG.push/1)
   #       if Enum.any?(results, fn(x) -> x != :ok end) do
   #         # Mark them all not imported
   #         Logger.error "Detected errors on import..."

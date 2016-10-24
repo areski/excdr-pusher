@@ -51,6 +51,7 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
+  influxdatabase:  "newfiesdialer",
   # Amount of CDRs to fetch every 0.1 second
   amount_cdr_fetch: 100
   # 1000 CDRs per second -> 60.000 per minute
@@ -59,3 +60,12 @@ config :excdr_pusher,
 config :excdr_pusher, ExCdrPusher.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME"
+
+# InfluxDB configuration
+config :excdr_pusher, ExCdrPusher.InConnection,
+  host:      "influxdb_host",
+  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
+  pool:      [ max_overflow: 0, size: 1 ],
+  port:      8086,
+  scheme:    "http",
+  writer:    Instream.Writer.Line

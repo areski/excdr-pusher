@@ -59,6 +59,7 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./private/freeswitchcdr.db",
+  influxdatabase:  "newfiesdialer",
   # Amount of CDRs to fetch every 0.1 second
   # amount_cdr_fetch: 100
   amount_cdr_fetch: 10
@@ -67,6 +68,15 @@ config :excdr_pusher,
 config :excdr_pusher, ExCdrPusher.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: "postgres://postgres:password@localhost/newfiesdb"
+
+# InfluxDB configuration
+config :excdr_pusher, ExCdrPusher.InConnection,
+  host:      "influxdb_host",
+  # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
+  pool:      [ max_overflow: 0, size: 1 ],
+  port:      8086,
+  scheme:    "http",
+  writer:    Instream.Writer.Line
 
 #If you need to load configuration from the environment at runtime, you will need to do something like the following:
 # my_setting = Application.get_env(:myapp, :setting) || System.get_env("MY_SETTING") || default_val
