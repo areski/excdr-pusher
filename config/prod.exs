@@ -51,8 +51,9 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
-  # Amount of CDRs to fetch every second
+  # Amount of CDRs to fetch every 0.1 second
   amount_cdr_fetch: 100
+  # 1000 CDRs per second -> 60.000 per minute
 
 # Push to
 config :excdr_pusher, ExCdrPusher.Repo,

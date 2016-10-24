@@ -6,24 +6,23 @@ defmodule Pusher do
   alias ExCdrPusher.CDR
   alias ExCdrPusher.Sanitizer
 
-  # Todo: Build buffer to store locally the CDR and insert them in batch
-  # Batch insert doesnt seem to work with Ecto ?!
+  @moduledoc """
+  This is the GenServer to push CDRs to PostgreSQL...
+  """
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  # def init(state) do
-  #   {:ok, %{count: 0}}
-  # end
-
-  # Insert single CDR
-  def insert_cdr(cdr) do
+  @doc """
+  Build CDR Map
+  """
+  def build_cdr_map(cdr) do
+    # Sanitize CDR
     clean_cdr = Sanitizer.cdr(cdr)
     # maybe we could move construction of %CDR to Sanitizer.cdr and kind of sanitize all the fields
     # so we use clean_cdr[:field_name_xy] everywhere
-
-    newcdr = %CDR{
+    newcdr = %{
       callid: cdr[:uuid],
       callerid: cdr[:caller_id_number],
       phone_number: cdr[:destination_number],
@@ -41,18 +40,27 @@ defmodule Pusher do
       billed_duration: clean_cdr[:billed_duration],
       call_cost: clean_cdr[:nibble_total_billed]
     }
-    result = Repo.insert!(newcdr)
-    Logger.info "PG CDR inserted..."
+  end
+
+  # Insert CDR in batch
+  def insert_cdr(cdr_list) do
+    cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
+    {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
+    Logger.info "PG CDRs inserted (#{nb_inserted})..."
+
     #
-    case result do
-      %CDR{id: pg_cdr_id} ->
-        Logger.info "PG_CDR_ID -> #{pg_cdr_id}"
-        Collector.update_cdr_ok(cdr[:rowid], pg_cdr_id)
-      {:error, err} ->
-        Collector.update_cdr_error(cdr[:rowid])
-        Logger.error err
-    end
-    {:ok, 1}
+    # update CDR ID disabled / to implement it we need to use returning: true
+    # and use the callid to know which Sqlite CDR to update
+    #
+    # case result do
+    #   %CDR{id: pg_cdr_id} ->
+    #     Logger.info "PG_CDR_ID -> #{pg_cdr_id}"
+    #     Collector.update_cdr_ok(cdr[:rowid], pg_cdr_id)
+    #   {:error, err} ->
+    #     Collector.update_cdr_error(cdr[:rowid])
+    #     Logger.error err
+    # end
+    {:ok, nb_inserted}
   end
 
   # Async push CDRs

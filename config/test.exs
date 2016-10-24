@@ -59,7 +59,7 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./data/freeswitchcdr-test.db",
-  # Amount of CDRs to fetch every second
+  # Amount of CDRs to fetch every 0.1 second
   amount_cdr_fetch: 100
 
 # Push to

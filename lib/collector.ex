@@ -9,7 +9,7 @@ defmodule Collector do
   def init(state) do
     Logger.debug "[init] we will collect cdrs information from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     sqlite_create_fields()
-    Process.send_after(self(), :timeout_1, 1 * 1000) # 1 sec
+    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
     {:ok, state}
   end
 
@@ -19,7 +19,7 @@ defmodule Collector do
   end
 
   defp schedule_task() do
-    Process.send_after(self(), :timeout_1, 1 * 1000) # 1 sec
+    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       fetch_cdr()
     else
@@ -36,24 +36,29 @@ defmodule Collector do
         Logger.error reason
       {:ok, []} ->
         Logger.info "cdrs is empty []"
-      {:ok, _} ->
-        sqlite_update_many_cdr(cdrs)
-        Logger.info "CDR to PG: -*****************************************************-"
-        push_cdr(cdrs)
+      {:ok, cdr_list} ->
+        start_pushing_cdr(cdr_list)
     end
   end
 
-  def push_cdr(result) do
-    case result do
-      {:ok, cdrs} ->
-        results = Enum.map(cdrs, &Pusher.push/1)
-        if Enum.any?(results, fn(x) -> x != :ok end) do
-          # Mark them all not imported
-          Logger.error "Detected errors on import..."
-          Logger.error "Error results: #{inspect results}"
-        end
-    end
+  defp start_pushing_cdr(cdr_list) do
+    Logger.info "start_pushing_cdr:"
+    sqlite_update_many_cdr(cdr_list)
+    # Push To PostgreSQL
+    Pusher.push(cdr_list)
   end
+
+  # def push_singlecdr(result) do
+  #   case result do
+  #     {:ok, cdrs} ->
+  #       results = Enum.map(cdrs, &Pusher.push/1)
+  #       if Enum.any?(results, fn(x) -> x != :ok end) do
+  #         # Mark them all not imported
+  #         Logger.error "Detected errors on import..."
+  #         Logger.error "Error results: #{inspect results}"
+  #       end
+  #   end
+  # end
 
   defp sqlite_get_cdr() do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
@@ -81,20 +86,17 @@ defmodule Collector do
 
   # Mark those CDRs as imported to not fetch them twice
   defp sqlite_update_many_cdr(cdrs) do
-    case cdrs do
-      {:ok, listcdr} ->
-        Logger.debug "Mark CDRs: #{length(listcdr)}"
-        ids = Enum.map(listcdr, fn(x) -> x[:rowid] end)
-        questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
-        sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
-        # IO.puts sql
-        case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-          {:ok, db} ->
-            Sqlitex.query(db, sql, bind: ids)
-          {:error, reason} ->
-            Logger.error reason
-            {:error}
-        end
+    Logger.debug "Mark CDRs: #{length(cdrs)}"
+    ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
+    questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
+    sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
+    # IO.puts sql
+    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+      {:ok, db} ->
+        Sqlitex.query(db, sql, bind: ids)
+      {:error, reason} ->
+        Logger.error reason
+        {:error}
     end
   end
 
