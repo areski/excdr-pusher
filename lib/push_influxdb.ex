@@ -24,11 +24,12 @@ defmodule PushInfluxDB do
   end
 
   def build_series(data) do
-    IO.inspect data
+    IO.inspect data[:start_stamp]
     serie = %CDRDurationSeries{}
     serie = %{ serie | tags: %{ serie.tags | campaign_id: data[:campaign_id] }}
     serie = %{ serie | fields: %{ serie.fields | value: data[:billsec] }}
     serie
+    IO.inspect serie
 
     # ???
     # Build all series and return them all:

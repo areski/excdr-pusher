@@ -25,6 +25,7 @@ CREATE TABLE cdr (
     amd_status VARCHAR,
     legtype VARCHAR,
     hangup_cause_q850 INTEGER,
+    campaign_id INTEGER,
     job_uuid VARCHAR,
     imported INTEGER DEFAULT 0,
     pg_cdr_id INTEGER DEFAULT 0);

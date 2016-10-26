@@ -24,11 +24,14 @@ newfies_dialer_db=# \d dialer_cdr
  user_id           | integer                  | not null
  billed_duration   | integer                  | not null
  call_cost         | numeric(10,5)            | not null
+ campaign_id       | integer                  |
+
 Indexes:
     "dialer_cdr_pkey" PRIMARY KEY, btree (id)
     "dialer_cdr_11a584c4" btree (starting_date)
     "dialer_cdr_dcadeff8" btree (used_gateway_id)
     "dialer_cdr_e8701ad4" btree (user_id)
+    "dialer_cdr_f14acec3" btree (campaign_id)
 Foreign-key constraints:
     "dialer_cdr_used_gateway_id_d643c2e9_fk_dialer_gateway_id" FOREIGN KEY (used_gateway_id) REFERENCES dialer_gateway(id) DEFERRABLE INITIALLY DEFERRED
     "dialer_cdr_user_id_e0635e5e_fk_auth_user_id" FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED
@@ -57,6 +60,7 @@ used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
 call_cost         | 0.00000
+campaign_id       | 1
 -[ RECORD 2 ]-----+-------------------------------------
 id                | 1705
 request_uuid      |
@@ -78,6 +82,7 @@ used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
 call_cost         | 0.00000
+campaign_id       | 1
 -[ RECORD 4 ]-----+-------------------------------------
 id                | 1703
 request_uuid      |
@@ -99,6 +104,7 @@ used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 0
 call_cost         | 0.00000
+campaign_id       | 1
 -[ RECORD 5 ]-----+-------------------------------------
 id                | 1702
 request_uuid      |
@@ -120,3 +126,4 @@ used_gateway_id   | 2
 user_id           | 1
 billed_duration   | 12
 call_cost         | 0.00000
+campaign_id       | 1

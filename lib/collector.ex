@@ -1,6 +1,7 @@
 defmodule Collector do
   use GenServer
   require Logger
+  alias ExCdrPusher.HSqlite
 
   def start_link(state, opts \\ []) do
     GenServer.start_link(__MODULE__, state, opts)
@@ -8,7 +9,7 @@ defmodule Collector do
 
   def init(state) do
     Logger.debug "[init] we will collect cdrs information from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
-    sqlite_create_fields()
+    HSqlite.sqlite_create_fields()
     Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
     {:ok, state}
   end
@@ -20,17 +21,17 @@ defmodule Collector do
 
   defp schedule_task() do
     Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
-    if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      fetch_cdr()
-    else
-      Logger.error "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
-    end
+    # if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+    #   fetch_cdr()
+    # else
+    #   Logger.error "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+    # end
     # current_date = :os.timestamp |> :calendar.now_to_datetime
     # Logger.debug "#{inspect current_date}"
   end
 
   defp fetch_cdr() do
-    cdrs = sqlite_get_cdr()
+    cdrs = HSqlite.sqlite_get_cdr()
     case cdrs do
       {:error, {:sqlite_error, reason}} ->
         Logger.error reason
@@ -43,7 +44,7 @@ defmodule Collector do
 
   defp start_pushing_cdr(cdr_list) do
     Logger.info "start_pushing_cdr:"
-    sqlite_update_many_cdr(cdr_list)
+    HSqlite.sqlite_update_many_cdr(cdr_list)
     # Push To PostgreSQL
     PusherPG.push(cdr_list)
     # Push To InfluxDB
@@ -62,66 +63,14 @@ defmodule Collector do
   #   end
   # end
 
-  defp sqlite_get_cdr() do
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
-        # IO.puts "fetchsql:" <> fetchsql
-        Sqlitex.query(db, fetchsql, bind: [Application.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
-  end
-
-  defp sqlite_create_fields() do
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
-        Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN pg_cdr_id INTEGER DEFAULT 0;")
-        Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
-  end
-
-  # Mark those CDRs as imported to not fetch them twice
-  defp sqlite_update_many_cdr(cdrs) do
-    Logger.debug "Mark CDRs: #{length(cdrs)}"
-    ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
-    questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
-    sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
-    # IO.puts sql
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        Sqlitex.query(db, sql, bind: ids)
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
-  end
-
   # Async mark CDR Ok
   def update_cdr_ok(rowid, pg_cdr_id) do
     GenServer.cast(__MODULE__, {:pg_cdr_ok, rowid, pg_cdr_id})
   end
 
   def handle_cast({:pg_cdr_ok, rowid, pg_cdr_id}, state) do
-    update_sqlite_cdr_ok(rowid, pg_cdr_id)
+    HSqlite.update_sqlite_cdr_ok(rowid, pg_cdr_id)
     {:noreply, state}
-  end
-
-  def update_sqlite_cdr_ok(rowid, pg_cdr_id) do
-    Logger.info "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
-    sql = "UPDATE cdr SET imported=1, pg_cdr_id=? WHERE OID=?"
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        Sqlitex.query(db, sql, bind: [pg_cdr_id, rowid])
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
   end
 
   # Async mark CDR error
@@ -130,20 +79,8 @@ defmodule Collector do
   end
 
   def handle_cast({:pg_cdr_error, rowid}, state) do
-    update_sqlite_cdr_error(rowid)
+    HSqlite.update_sqlite_cdr_error(rowid)
     {:noreply, state}
-  end
-
-  def update_sqlite_cdr_error(rowid) do
-    Logger.debug "CDR not imported rowid:#{rowid}"
-    sql = "UPDATE cdr SET imported=0 WHERE OID=?"
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        Sqlitex.query(db, sql, bind: rowid)
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
   end
 
 end
