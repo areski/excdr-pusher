@@ -1,7 +1,7 @@
-# Push FreeSWITCH CDRs to PostgreSQL & InfluxDB [![Build Status](https://travis-ci.org/areski/excdr-pusher.svg?branch=master)](https://travis-ci.org/areski/excdr_pusher_influxdb)
+# Push FreeSWITCH CDRs to PostgreSQL [![Build Status](https://travis-ci.org/areski/excdr-pusher.svg?branch=master)](https://travis-ci.org/areski/excdr_pusher_influxdb)
 
 
-Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to PostgreSQL and to InfluxDB.
+Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to PostgreSQL.
 
 
 ## Installation

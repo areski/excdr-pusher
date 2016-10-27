@@ -45,9 +45,10 @@ defmodule Collector do
   end
 
   defp start_pushing_cdr(cdr_list) do
-    Logger.info "start_pushing_cdr:"
+    # Send CDRs to PostgreSQL
     PusherPG.push(cdr_list)
-    PushInfluxDB.push(cdr_list)
+    # Send CDRs to InfluxDB
+    # PushInfluxDB.push(cdr_list)
   end
 
   # def push_singlecdr(result) do
