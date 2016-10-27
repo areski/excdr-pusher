@@ -15,8 +15,6 @@ defmodule ExCdrPusher.Sanitizer do
 
     billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
 
-    IO.inspect cdr[:start_stamp]
-    IO.puts "*********************"
     {{year, month, day}, {hour, min, sec, 0}} = cdr[:start_stamp]
     cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
 

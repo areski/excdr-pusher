@@ -43,7 +43,7 @@ defmodule ExCdrPusher.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.0.5"},
      {:logger_file_backend, "0.0.7"},
-     {:instream, "~> 0.12"},
+     {:instream, "~> 0.13"},
      {:swab, github: "crownedgrouse/swab", branch: "master"}
     ]
   end

@@ -53,3 +53,5 @@ List of improvements and tasks,
 
 - [ ] use [conform](https://github.com/bitwalker/conform) to support config file
 - [ ] install script to quickly deploy
+- [ ] add inch_ex
+- [ ] add credo - https://github.com/rrrene/credo

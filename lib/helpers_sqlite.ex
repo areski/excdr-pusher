@@ -14,17 +14,17 @@ defmodule ExCdrPusher.HSqlite do
     end
   end
 
-  def sqlite_create_fields() do
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      {:ok, db} ->
-        Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
-        Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN pg_cdr_id INTEGER DEFAULT 0;")
-        Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
-      {:error, reason} ->
-        Logger.error reason
-        {:error}
-    end
-  end
+  # def sqlite_create_fields() do
+  #   case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+  #     {:ok, db} ->
+  #       Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
+  #       Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN pg_cdr_id INTEGER DEFAULT 0;")
+  #       Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
+  #     {:error, reason} ->
+  #       Logger.error reason
+  #       {:error}
+  #   end
+  # end
 
   # Mark those CDRs as imported to not fetch them twice
   def sqlite_update_many_cdr(cdrs) do

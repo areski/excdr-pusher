@@ -27,4 +27,9 @@ defmodule SqliteCDRTest do
     assert length(cdrs) == 10
   end
 
+  test "get timestamp", context do
+    {:ok, [row]} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 1")
+    assert row[:start_uepoch] == 1477478486443963
+  end
+
 end

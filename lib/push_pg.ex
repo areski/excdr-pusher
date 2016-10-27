@@ -22,7 +22,7 @@ defmodule PusherPG do
     clean_cdr = Sanitizer.cdr(cdr)
     # maybe we could move construction of %CDR to Sanitizer.cdr and kind of sanitize all the fields
     # so we use clean_cdr[:field_name_xy] everywhere
-    newcdr = %{
+    %{
       callid: cdr[:uuid],
       callerid: cdr[:caller_id_number],
       phone_number: cdr[:destination_number],
@@ -70,7 +70,7 @@ defmodule PusherPG do
 
   def handle_cast({:push_cdr, cdr}, state) do
     # Insert the CDR
-    {:ok, nbimport} = insert_cdr(cdr)
+    {:ok, _} = insert_cdr(cdr)
     {:noreply, state}
   end
 
