@@ -28,7 +28,8 @@ defmodule ExCdrPusher.Sanitizer do
 
     hangup_cause_q850 = Utils.convertintdefault(cdr[:hangup_cause_q850], 0)
 
-    user_id = user_id(cdr[:user_id])
+    user_id = clean_id(cdr[:user_id])
+    campaign_id = clean_id(cdr[:campaign_id])
 
     %{
       billed_duration: billed_duration,
@@ -39,21 +40,21 @@ defmodule ExCdrPusher.Sanitizer do
       disposition: disposition,
       hangup_cause_q850: hangup_cause_q850,
       user_id: user_id,
+      campaign_id: campaign_id,
     }
   end
 
   @doc """
-  Sanitize User ID
+  Sanitize User ID, Campaign ID
 
   ## Examples
 
-    iex> ExCdrPusher.Sanitizer.user_id("")
+    iex> ExCdrPusher.Sanitizer.clean_id("")
     1
-    iex> ExCdrPusher.Sanitizer.user_id(1234)
+    iex> ExCdrPusher.Sanitizer.clean_id(1234)
     1234
   """
-  def user_id(user_id) do
-    if (user_id == ""), do: 1, else: user_id
-  end
+  def clean_id(""), do: 1
+  def clean_id(value), do: value
 
 end
