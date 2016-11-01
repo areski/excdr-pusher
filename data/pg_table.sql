@@ -19,7 +19,7 @@ newfies_dialer_db=# \d dialer_cdr
  hangup_cause_q850 | character varying(10)    |
  leg_type          | smallint                 |
  amd_status        | smallint                 |
- callrequest       | integer                  |
+ callrequest_id    | integer                  |
  used_gateway_id   | integer                  |
  user_id           | integer                  | not null
  billed_duration   | integer                  | not null

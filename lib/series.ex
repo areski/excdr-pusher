@@ -76,7 +76,7 @@ end
 # field :hangup_cause_q850, :integer, default: 0
 # field :leg_type,          :integer
 # field :amd_status,        :integer
-# field :callrequest,       :integer
+# field :callrequest_id,    :integer
 # field :used_gateway_id,   :integer
 # field :user_id,           :integer
 # field :billed_duration,   :integer

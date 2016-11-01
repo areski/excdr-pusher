@@ -14,9 +14,10 @@ defmodule ExCdrPusher.CDR do
     field :hangup_cause_q850, :integer, default: 0
     field :leg_type,          :integer
     field :amd_status,        :integer
-    field :callrequest,       :integer
+    field :callrequest_id,    :integer
     field :used_gateway_id,   :integer
     field :user_id,           :integer
+    field :campaign_id,       :integer
     field :billed_duration,   :integer
     field :call_cost,         :float, default: 0.0
   end
@@ -54,8 +55,9 @@ end
  # hangup_cause_q850 | character varying(10)    |
  # leg_type          | smallint                 |
  # amd_status        | smallint                 |
- # callrequest       | integer                  |
+ # callrequest_id    | integer                  |
  # used_gateway_id   | integer                  |
  # user_id           | integer                  | not null
  # billed_duration   | integer                  | not null
  # call_cost         | numeric(10,5)            | not null
+ # campaign_id       | integer                  |

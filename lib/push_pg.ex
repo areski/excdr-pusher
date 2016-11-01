@@ -34,9 +34,10 @@ defmodule PusherPG do
       hangup_cause_q850: clean_cdr[:hangup_cause_q850],
       leg_type: clean_cdr[:legtype],
       amd_status: clean_cdr[:amd_status],
-      callrequest: cdr[:callrequest_id],
+      callrequest_id: cdr[:callrequest_id],
       used_gateway_id: cdr[:used_gateway_id],
       user_id: clean_cdr[:user_id],
+      campaign_id: clean_cdr[:campaign_id],
       billed_duration: clean_cdr[:billed_duration],
       call_cost: clean_cdr[:nibble_total_billed]
     }
