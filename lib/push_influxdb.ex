@@ -41,7 +41,6 @@ defmodule PushInfluxDB do
 
     serie = %CDRDurationSeries{}
     serie = %{ serie | timestamp: ntime }
-    # serie = %{ serie | timestamp: 1439587926000000000 }
     serie = %{ serie | tags: %{ serie.tags | campaign_id: data[:campaign_id] }}
     serie = %{ serie | fields: %{ serie.fields | value: data[:billsec] }}
     serie

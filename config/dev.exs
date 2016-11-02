@@ -62,7 +62,7 @@ config :excdr_pusher,
   influxdatabase:  "newfiesdialer",
   # Amount of CDRs to fetch every 0.1 second
   # amount_cdr_fetch: 100
-  amount_cdr_fetch: 50
+  amount_cdr_fetch: 10
 
 # Push to
 config :excdr_pusher, ExCdrPusher.Repo,

@@ -59,12 +59,15 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
-  # Push to
-  postgres_dbname: "DBNAME",
-  postgres_host: "DBHOST",
-  postgres_username: "DBUSERNAME",
-  postgres_password: "DBPASSWORD",
-  postgres_port: "DBPORT"
+  # influxdatabase:  "newfiesdialer",
+  # Amount of CDRs to fetch every 0.1 second
+  # amount_cdr_fetch: 100
+  amount_cdr_fetch: 50
+
+# Push to
+config :excdr_pusher, ExCdrPusher.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  url: "postgres://postgres:password@localhost/newfiesdb"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
