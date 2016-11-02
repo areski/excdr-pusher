@@ -1,6 +1,6 @@
 defmodule ExCdrPusher.Utils do
 
-  @doc """
+  @doc ~S"""
   Convert to int and default to 0
 
   ## Example
@@ -21,7 +21,7 @@ defmodule ExCdrPusher.Utils do
     end
   end
 
-  @doc """
+  @doc ~S"""
   Convert to float and default to 0.0
 
   ## Example
@@ -71,7 +71,7 @@ defmodule ExCdrPusher.Utils do
     end
   end
 
-  @doc """
+  @doc ~S"""
   Transform disposition
 
   ## Example

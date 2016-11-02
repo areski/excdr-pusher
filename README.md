@@ -30,11 +30,11 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     mkdir /var/log/excdr_pusher
     ```
 
-  4. Add host in your `/etc/hosts` eg:
-
-    ```
-    127.0.0.1     influxdb_host
-    ```
+  #4. Add host in your `/etc/hosts` eg:
+  #
+  #  ```
+  #  127.0.0.1     influxdb_host
+  #  ```
 
 ## Start on reboot
 
