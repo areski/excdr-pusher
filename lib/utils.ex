@@ -31,10 +31,13 @@ defmodule ExCdrPusher.Utils do
     6
     iex> ExCdrPusher.Utils.convert_float(12, 6)
     12
+    iex> ExCdrPusher.Utils.convert_float("20", 6)
+    20.0
   """
   def convert_float(nil, default), do: default
   def convert_float("", default), do: default
   def convert_float(value, _) when is_float(value), do: value
+  def convert_float(value, _) when is_integer(value), do: value
   def convert_float(value, default) do
     case Float.parse(value) do
       :error -> default
@@ -46,9 +49,8 @@ defmodule ExCdrPusher.Utils do
   Calculate billed_duration using billsec & billing increment
 
   ## Example
-
     iex> ExCdrPusher.Utils.calculate_billdur(12, 6)
-    121
+    12
     iex> ExCdrPusher.Utils.calculate_billdur(20, 6)
     24
     iex> ExCdrPusher.Utils.calculate_billdur(0, 0)
