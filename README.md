@@ -36,6 +36,28 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
   #  127.0.0.1     influxdb_host
   #  ```
 
+
+## Compile & Build Release
+
+  1. Edit version in `mix.exs`
+
+
+  2. Compile:
+
+      MIX_ENV=prod mix compile
+
+
+  3. Build release:
+
+      MIX_ENV=prod mix release
+
+
+  4. Build Deb package:
+
+      MIX_ENV=prod mix release --deb
+
+
+
 ## Start on reboot
 
   Add excdr_pusher to `systemd` on Debian 8.x:
