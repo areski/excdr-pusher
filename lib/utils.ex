@@ -2,48 +2,53 @@ defmodule ExCdrPusher.Utils do
 
   @doc """
   Convert to int and default to 0
+
+  ## Example
+    iex> ExCdrPusher.Utils.convert_int(nil, 6)
+    6
+    iex> ExCdrPusher.Utils.convert_int("", 6)
+    6
+    iex> ExCdrPusher.Utils.convert_int(12, 6)
+    12
   """
-  def convertintdefault(val, defvalue) do
-    cond do
-      val == nil ->
-        defvalue
-      val == "" ->
-        defvalue
-      is_integer(val) ->
-        val
-      true ->
-        case Integer.parse(val) do
-          :error -> defvalue
-          {intparse, _} -> intparse
-        end
+  def convert_int(nil, default), do: default
+  def convert_int("", default), do: default
+  def convert_int(value, _) when is_integer(value), do: value
+  def convert_int(value, default) do
+    case Integer.parse(value) do
+      :error -> default
+      {intparse, _} -> intparse
     end
   end
 
   @doc """
-  Convert to Float and default to 0.0
+  Convert to float and default to 0.0
+
+  ## Example
+    iex> ExCdrPusher.Utils.convert_float(nil, 6)
+    6
+    iex> ExCdrPusher.Utils.convert_float("", 6)
+    6
+    iex> ExCdrPusher.Utils.convert_float(12, 6)
+    12
   """
-  def convertfloatdefault(val, defvalue) do
-    cond do
-      val == nil ->
-        defvalue
-      val == "" ->
-        defvalue
-      is_integer(val) ->
-        val
-      true ->
-        case Float.parse(val) do
-          :error -> defvalue
-          {floatparse, _} -> floatparse
-        end
+  def convert_float(nil, default), do: default
+  def convert_float("", default), do: default
+  def convert_float(value, _) when is_float(value), do: value
+  def convert_float(value, default) do
+    case Float.parse(value) do
+      :error -> default
+      {floatparse, _} -> floatparse
     end
   end
 
-  @doc """
+  @doc ~S"""
   Calculate billed_duration using billsec & billing increment
 
   ## Example
+
     iex> ExCdrPusher.Utils.calculate_billdur(12, 6)
-    12
+    121
     iex> ExCdrPusher.Utils.calculate_billdur(20, 6)
     24
     iex> ExCdrPusher.Utils.calculate_billdur(0, 0)
@@ -52,8 +57,8 @@ defmodule ExCdrPusher.Utils do
     0
   """
   def calculate_billdur(billsec, increment) do
-    billsec = convertintdefault(billsec, 0)
-    increment = convertintdefault(increment, 0)
+    billsec = convert_int(billsec, 0)
+    increment = convert_int(increment, 0)
     cond do
       increment <= 0 or billsec <= 0 ->
         billsec
@@ -66,6 +71,12 @@ defmodule ExCdrPusher.Utils do
 
   @doc """
   Transform disposition
+
+  ## Example
+    iex> ExCdrPusher.Utils.get_disposition("NORMAL_CLEARING")
+    "ANSWER"
+    iex> ExCdrPusher.Utils.get_disposition("USER_BUSY")
+    "BUSY"
   """
   def get_disposition(hangup_cause) do
     case hangup_cause do

@@ -30,7 +30,7 @@ defmodule ExCdrPusher.HSqlite do
   def sqlite_update_many_cdr(cdrs) do
     Logger.debug "Mark CDRs: #{length(cdrs)}"
     ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
-    questmarks = Enum.map(ids, fn(x) -> "?" end) |> Enum.join(", ")
+    questmarks = Enum.map(ids, fn(_) -> "?" end) |> Enum.join(", ")
     sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
     # IO.puts sql
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
