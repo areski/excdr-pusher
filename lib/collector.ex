@@ -37,7 +37,7 @@ defmodule Collector do
       {:error, {:sqlite_error, reason}} ->
         Logger.error reason
       {:ok, []} ->
-        Logger.info "cdrs is empty []"
+        Logger.debug "cdrs is empty []"
       {:ok, cdr_list} ->
         HSqlite.sqlite_update_many_cdr(cdr_list)
         start_pushing_cdr(cdr_list)
