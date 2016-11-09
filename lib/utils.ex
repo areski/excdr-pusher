@@ -103,6 +103,8 @@ defmodule ExCdrPusher.Utils do
   Transform amd_result
 
   ## Example
+    iex> ExCdrPusher.Utils.get_amd_status("HUMAN")
+    1
     iex> ExCdrPusher.Utils.get_amd_status("PERSON")
     1
     iex> ExCdrPusher.Utils.get_amd_status("MACHINE")
@@ -114,6 +116,8 @@ defmodule ExCdrPusher.Utils do
   """
   def get_amd_status(hangup_cause) do
     case hangup_cause do
+      "HUMAN" ->
+        1
       "PERSON" ->
         1
       "MACHINE" ->
