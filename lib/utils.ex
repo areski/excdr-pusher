@@ -99,4 +99,30 @@ defmodule ExCdrPusher.Utils do
     end
   end
 
+  @doc ~S"""
+  Transform amd_result
+
+  ## Example
+    iex> ExCdrPusher.Utils.get_amd_status("PERSON")
+    1
+    iex> ExCdrPusher.Utils.get_amd_status("MACHINE")
+    2
+    iex> ExCdrPusher.Utils.get_amd_status("UNSURE")
+    3
+    iex> ExCdrPusher.Utils.get_amd_status("")
+    0
+  """
+  def get_amd_status(hangup_cause) do
+    case hangup_cause do
+      "PERSON" ->
+        1
+      "MACHINE" ->
+        2
+      "UNSURE" ->
+        3
+      _ ->
+        0
+    end
+  end
+
 end

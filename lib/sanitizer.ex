@@ -23,7 +23,7 @@ defmodule ExCdrPusher.Sanitizer do
     legtype = Utils.convert_int(cdr[:legtype], 1)
 
     # get amd_status
-    amd_status = Utils.convert_int(cdr[:amd_status], 0)
+    amd_status = Utils.get_amd_status(cdr[:amd_result])
 
     # get nibble_total_billed
     nibble_total_billed = Utils.convert_float(cdr[:nibble_total_billed], 0.0)
