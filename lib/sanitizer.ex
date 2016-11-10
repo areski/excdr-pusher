@@ -34,6 +34,9 @@ defmodule ExCdrPusher.Sanitizer do
     # get hangup_cause_q850
     hangup_cause_q850 = Utils.convert_int(cdr[:hangup_cause_q850], 0)
 
+    # on transfer the disposition & hangup_cause_q850 needs to be manually corrected
+    {disposition, hangup_cause_q850} = Utils.fix_hangup_cause_aleg(disposition, hangup_cause_q850, cdr[:billsec])
+
     # get user_id
     user_id = clean_id(cdr[:user_id])
 
