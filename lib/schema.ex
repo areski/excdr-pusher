@@ -6,7 +6,10 @@ defmodule ExCdrPusher.CDR do
     field :callid,            :string
     field :callerid,          :string
     field :phone_number,      :string
-    field :starting_date,     Ecto.DateTime
+    # field :starting_date,     :utc_datetime
+    # field :starting_date,     :naive_datetime
+    # field :starting_date,     Timex.Ecto.DateTimeWithTimezone
+    field :starting_date,     Timex.Ecto.DateTime
     field :duration,          :integer, default: 0
     field :billsec,           :integer, default: 0
     field :disposition,       :string

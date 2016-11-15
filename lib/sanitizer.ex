@@ -16,8 +16,19 @@ defmodule ExCdrPusher.Sanitizer do
     billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
 
     # get cdr date
+    # IO.inspect cdr[:start_stamp]
     {{year, month, day}, {hour, min, sec, 0}} = cdr[:start_stamp]
-    cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
+    # cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
+    # Work with naiveDatetime...
+    # {:ok, ndt} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
+    # {:ok, cdrdate} = NaiveDateTime.from_erl({{year, month, day}, {hour, min, sec}})
+    # dt = %DateTime{year: 2000, month: 2, day: 29, zone_abbr: "CET",
+    #             hour: 23, minute: 0, second: 7, microsecond: {0, 0},
+    #             utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"}
+
+    # Using Timex and convert from local timezone to UTC
+    dt = Timex.to_datetime({{year, month, day}, {hour, min, sec}}, :local)
+    cdrdate = Timex.Timezone.convert(dt, "UTC")
 
     # get legtype
     legtype = Utils.convert_int(cdr[:legtype], 1)
