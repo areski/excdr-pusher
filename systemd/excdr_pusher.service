@@ -1,7 +1,11 @@
 [Unit]
 Description=Collect and push channels information from FreeSWITCH Sqlite CoreDB to InfluxDB
 Documentation=https://github.com/areski/excdr-pusher
+After=syslog.target
 After=network.target
+After=postgresql.service
+After=redis.service
+#After=network.target freeswitch.service
 
 [Service]
 Type=forking
