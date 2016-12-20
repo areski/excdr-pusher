@@ -43,7 +43,9 @@ defmodule PusherPG do
     }
   end
 
-  # Insert CDR in batch
+  @doc """
+  Insert CDR in batch
+  """
   def insert_cdr(cdr_list) do
     cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
@@ -64,13 +66,17 @@ defmodule PusherPG do
     {:ok, nb_inserted}
   end
 
-  # Async push CDRs
+  @doc """
+  Async push CDRs
+  """
   def push(cdr) do
     GenServer.cast(__MODULE__, {:push_cdr, cdr})
   end
 
+  @doc """
+  handle_cast to insert CDRs
+  """
   def handle_cast({:push_cdr, cdr}, state) do
-    # Insert the CDR
     {:ok, _} = insert_cdr(cdr)
     {:noreply, state}
   end
