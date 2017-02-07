@@ -36,7 +36,7 @@ defmodule PusherPG do
       amd_status: clean_cdr[:amd_status],
       callrequest_id: cdr[:callrequest_id],
       used_gateway_id: cdr[:used_gateway_id],
-      user_id: clean_cdr[:user_id],
+      # user_id: clean_cdr[:user_id],
       campaign_id: clean_cdr[:campaign_id],
       billed_duration: clean_cdr[:billed_duration],
       call_cost: clean_cdr[:nibble_total_billed]

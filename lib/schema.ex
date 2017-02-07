@@ -19,7 +19,7 @@ defmodule ExCdrPusher.CDR do
     field :amd_status,        :integer
     field :callrequest_id,    :integer
     field :used_gateway_id,   :integer
-    field :user_id,           :integer
+    # field :user_id,           :integer
     field :campaign_id,       :integer
     field :billed_duration,   :integer
     field :call_cost,         :float, default: 0.0
@@ -28,10 +28,10 @@ end
 
 # alias ExCdrPusher.Repo
 # alias ExCdrPusher.CDR
-# newcdr = %CDR{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, user_id: 1, billed_duration: 0, call_cost: 0.0}
+# newcdr = %CDR{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
 # Repo.insert!(newcdr)
 
-# newcdr = %{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, user_id: 1, billed_duration: 0, call_cost: 0.0}
+# newcdr = %{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
 # cdrs = [newcdr, newcdr]
 # Repo.insert!(newcdr)
 # Repo.insert_all(CDR, cdrs)
@@ -60,7 +60,6 @@ end
  # amd_status        | smallint                 |
  # callrequest_id    | integer                  |
  # used_gateway_id   | integer                  |
- # user_id           | integer                  | not null
  # billed_duration   | integer                  | not null
  # call_cost         | numeric(10,5)            | not null
  # campaign_id       | integer                  |

@@ -18,7 +18,6 @@ CREATE TABLE cdr (
     uuid VARCHAR,
     bleg_uuid VARCHAR,
     account_code VARCHAR,
-    user_id INTEGER,
     used_gateway_id INTEGER,
     callrequest_id INTEGER,
     nibble_total_billed VARCHAR,
