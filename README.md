@@ -52,11 +52,6 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
       MIX_ENV=prod mix release
 
 
-  4. Build Deb package:
-
-      MIX_ENV=prod mix release --deb
-
-
 
 ## Start on reboot
 

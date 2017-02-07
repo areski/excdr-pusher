@@ -3,8 +3,8 @@ defmodule ExCdrPusher.Mixfile do
 
   def project do
     [app: :excdr_pusher,
-     version: "0.1.6",
-     elixir: "~> 1.3.3",
+     version: "0.2.1",
+     elixir: "~> 1.4.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps(),
@@ -19,8 +19,7 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :exrm, :swab, :sqlitex, :instream, :postgrex, :ecto, :timex, :logger_file_backend, :timex_ecto],
-    # [applications: [:exrm_deb],
+    [applications: [:logger, :swab, :sqlitex, :instream, :postgrex, :ecto, :timex, :logger_file_backend, :timex_ecto],
      mod: {ExCdrPusher, []}]
   end
 
@@ -36,17 +35,16 @@ defmodule ExCdrPusher.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-     {:ex_doc, "~> 0.13.0", only: :dev},
-     {:exrm, "~> 1.0.8"},
-     # {:exrm_deb, "~> 0.0.7"},
+     {:ex_doc, "~> 0.14.5", only: :dev},
+     {:distillery, "~> 1.0"},
      # {:sqlitex, path: "../sqlitex"},
-     {:sqlitex, "~> 1.0.1"},
+     {:sqlitex, "~> 1.1.1"},
      {:ecto, "~> 2.0.0"},
      {:postgrex, ">= 0.0.0"},
-     {:logger_file_backend, "0.0.7"},
-     {:instream, "~> 0.13"},
+     {:logger_file_backend, "0.0.9"},
+     {:instream, "~> 0.14"},
      {:swab, github: "crownedgrouse/swab", branch: "master"},
-     {:timex, "~> 3.1.5"},
+     {:timex, "~> 3.1.9"},
      {:timex_ecto, "~> 3.0.5"}
     ]
   end

@@ -8,7 +8,7 @@ After=redis.service
 #After=network.target freeswitch.service
 
 [Service]
-Type=forking
+Type=simple
 TimeoutSec=120
 User=root
 Group=daemon
@@ -17,6 +17,9 @@ Environment=MIX_ENV=prod PORT=8888 DB_HOST=127.0.0.1 DB_NAME=mydb DB_USER=myuser
 ExecStart=/app/excdr_pusher/bin/excdr_pusher start
 ExecStop=/app/excdr_pusher/bin/excdr_pusher stop
 Restart=always
+RestartSec=5
+RemainAfterExit=yes
+SyslogIdentifier=excdr_pusher
 
 [Install]
 WantedBy=multi-user.target
