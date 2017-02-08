@@ -8,7 +8,7 @@ Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to Postg
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-  1. Add `excdr_pusher` to your list of dependencies in `mix.exs`:
+1. Add `excdr_pusher` to your list of dependencies in `mix.exs`:
 
     ```elixir
     def deps do
@@ -16,7 +16,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
-  2. Ensure `excdr_pusher` is started before your application:
+2. Ensure `excdr_pusher` is started before your application:
 
     ```elixir
     def application do
@@ -24,45 +24,45 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
-  3. Create directory for logs:
+3. Create directory for logs:
 
     ```
     mkdir /var/log/excdr_pusher
     ```
 
-  #4. Add host in your `/etc/hosts` eg:
-  #
-  #  ```
-  #  127.0.0.1     influxdb_host
-  #  ```
+4. Add host in your `/etc/hosts` eg:
+
+    ```
+    127.0.0.1     influxdb_host
+    ```
 
 
 ## Compile & Build Release
 
-  1. Edit version in `mix.exs`
+1. Edit version in `mix.exs`
 
 
-  2. Compile:
+2. Compile:
 
-      MIX_ENV=prod mix compile
+    MIX_ENV=prod mix compile
 
 
-  3. Build release:
+3. Build release:
 
-      MIX_ENV=prod mix release
+    MIX_ENV=prod mix release
 
 
 
 ## Start on reboot
 
-  Add excdr_pusher to `systemd` on Debian 8.x:
+Add excdr_pusher to `systemd` on Debian 8.x:
 
-  ```
-  cp excdr_pusher.service /lib/systemd/system/excdr-pusher.service
-  systemctl enable excdr-pusher.service
-  systemctl daemon-reload
-  systemctl restart excdr-pusher.service
-  ```
+    ```
+    cp excdr_pusher.service /lib/systemd/system/excdr-pusher.service
+    systemctl enable excdr-pusher.service
+    systemctl daemon-reload
+    systemctl restart excdr-pusher.service
+    ```
 
 ## Todo
 
