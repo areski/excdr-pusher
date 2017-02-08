@@ -52,17 +52,15 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     MIX_ENV=prod mix release
 
 
-
 ## Start on reboot
 
 Add excdr_pusher to `systemd` on Debian 8.x:
 
-    ```
     cp excdr_pusher.service /lib/systemd/system/excdr-pusher.service
     systemctl enable excdr-pusher.service
     systemctl daemon-reload
     systemctl restart excdr-pusher.service
-    ```
+
 
 ## Todo
 
