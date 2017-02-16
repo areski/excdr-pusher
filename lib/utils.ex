@@ -136,8 +136,8 @@ defmodule ExCdrPusher.Utils do
     iex> ExCdrPusher.Utils.get_amd_status("")
     0
   """
-  def get_amd_status(hangup_cause) do
-    case hangup_cause do
+  def get_amd_status(amd_status) do
+    case amd_status do
       "HUMAN" ->
         1
       "PERSON" ->
