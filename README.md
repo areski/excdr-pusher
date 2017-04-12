@@ -66,6 +66,7 @@ Add excdr_pusher to `systemd` on Debian 8.x:
 
 List of improvements and tasks,
 
+- [ ] Repo.insert_all make genserver crash on error, so we need to find a way to capture error, and uncommit the sqlite CDRs that were fetched, this will ensure that on error we can do something, maybe flag the CDRs as errors for future checks
 - [ ] use [conform](https://github.com/bitwalker/conform) to support config file
 - [ ] install script to quickly deploy
 - [ ] add inch_ex

@@ -2,7 +2,7 @@ defmodule ExCdrPusher.HSqlite do
 
   require Logger
 
-  def sqlite_get_cdr() do
+  def fetch_cdr() do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
@@ -27,7 +27,7 @@ defmodule ExCdrPusher.HSqlite do
   # end
 
   # Mark those CDRs as imported to not fetch them twice
-  def sqlite_update_many_cdr(cdrs) do
+  def mark_cdr_imported(cdrs) do
     Logger.debug "Mark CDRs: #{length(cdrs)}"
     ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
     questmarks = Enum.map(ids, fn(_) -> "?" end) |> Enum.join(", ")
@@ -63,6 +63,15 @@ defmodule ExCdrPusher.HSqlite do
       {:error, reason} ->
         Logger.error reason
         {:error}
+    end
+  end
+
+  def count_cdr() do
+    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+      {:ok, db} ->
+        fetchsql = "SELECT count(*) FROM cdr WHERE imported=0;"
+        {:ok, count} = Sqlitex.query(db, "SELECT count(*) FROM cdr WHERE imported=0;")
+        IO.puts "CDRs remaining: #{inspect count}"
     end
   end
 

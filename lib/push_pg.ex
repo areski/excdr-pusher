@@ -67,9 +67,24 @@ defmodule PusherPG do
   end
 
   @doc """
+  Sync push CDRs
+  """
+  def sync_push(cdr) do
+    GenServer.call(__MODULE__, {:push_cdr, cdr})
+  end
+
+  @doc """
+  handle_cast to insert CDRs
+  """
+  def handle_call({:push_cdr, cdr}, _from, state) do
+    {res, _} = insert_cdr(cdr)
+    {:reply, res, state}
+  end
+
+  @doc """
   Async push CDRs
   """
-  def push(cdr) do
+  def async_push(cdr) do
     GenServer.cast(__MODULE__, {:push_cdr, cdr})
   end
 
@@ -79,6 +94,13 @@ defmodule PusherPG do
   def handle_cast({:push_cdr, cdr}, state) do
     {:ok, _} = insert_cdr(cdr)
     {:noreply, state}
+  end
+
+  def terminate(reason, state) do
+    # Do Shutdown Stuff
+    # IO.puts "Going Down: #{inspect(state)}"
+    Process.sleep(1000) #:timer.sleep(1000)
+    :normal
   end
 
 end

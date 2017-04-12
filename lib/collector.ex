@@ -12,10 +12,11 @@ defmodule Collector do
     Logger.info "[init] we will collect cdrs information from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
-    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
+    Process.send_after(self(), :timeout_1, 1 * 250) # 0.1 sec
+    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
     {:ok, state}
   end
-  
+
   def log_version() do
     {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
     version = List.to_string(vsn)
@@ -24,13 +25,20 @@ defmodule Collector do
 
   def handle_info(:timeout_1, state) do
     schedule_task() # Reschedule once more
+    Logger.info "[handle_info]"
+    {:noreply, state}
+  end
+
+  def handle_info(:timeout_1sec, state) do
+    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    # IO.puts "1 sec"
     {:noreply, state}
   end
 
   defp schedule_task() do
-    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
+    Process.send_after(self(), :timeout_1, 1 * 250) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
-      fetch_cdr()
+      start_import()
     else
       Logger.error "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     end
@@ -38,25 +46,20 @@ defmodule Collector do
     # Logger.debug "#{inspect current_date}"
   end
 
-  defp fetch_cdr() do
-    cdrs = HSqlite.sqlite_get_cdr()
-    case cdrs do
-      {:error, {:sqlite_error, reason}} ->
-        Logger.error reason
-      {:ok, []} ->
-        Logger.debug "cdrs is empty []"
-      {:ok, cdr_list} ->
-        HSqlite.sqlite_update_many_cdr(cdr_list)
-        start_pushing_cdr(cdr_list)
-    end
+  defp start_import() do
+    # HSqlite.count_cdr()
+    {:ok, cdr_list} = HSqlite.fetch_cdr()
+    HSqlite.mark_cdr_imported(cdr_list)
+    # Send CDRs to PostgreSQL
+    PusherPG.sync_push(cdr_list)
   end
 
-  defp start_pushing_cdr(cdr_list) do
-    # Send CDRs to PostgreSQL
-    PusherPG.push(cdr_list)
-    # Send CDRs to InfluxDB
-    # PushInfluxDB.push(cdr_list)
-  end
+  # defp start_pushing_cdr(cdr_list) do
+  #   # Send CDRs to PostgreSQL
+  #   PusherPG.push(cdr_list)
+  #   # Send CDRs to InfluxDB
+  #   # PushInfluxDB.push(cdr_list)
+  # end
 
   # def push_singlecdr(result) do
   #   case result do
@@ -70,24 +73,25 @@ defmodule Collector do
   #   end
   # end
 
-  def handle_cast({:pg_cdr_ok, rowid, pg_cdr_id}, state) do
-    HSqlite.update_sqlite_cdr_ok(rowid, pg_cdr_id)
-    {:noreply, state}
-  end
+  # Not used at the moment, as it was used by push_pg to update status on insert
+  # def handle_cast({:pg_cdr_ok, rowid, pg_cdr_id}, state) do
+  #   HSqlite.update_sqlite_cdr_ok(rowid, pg_cdr_id)
+  #   {:noreply, state}
+  # end
 
-  def handle_cast({:pg_cdr_error, rowid}, state) do
-    HSqlite.update_sqlite_cdr_error(rowid)
-    {:noreply, state}
-  end
+  # def handle_cast({:pg_cdr_error, rowid}, state) do
+  #   HSqlite.update_sqlite_cdr_error(rowid)
+  #   {:noreply, state}
+  # end
 
-  # Async mark CDR Ok
-  def update_cdr_ok(rowid, pg_cdr_id) do
-    GenServer.cast(__MODULE__, {:pg_cdr_ok, rowid, pg_cdr_id})
-  end
+  # # Async mark CDR Ok
+  # def update_cdr_ok(rowid, pg_cdr_id) do
+  #   GenServer.cast(__MODULE__, {:pg_cdr_ok, rowid, pg_cdr_id})
+  # end
 
-  # Async mark CDR error
-  def update_cdr_error(rowid) do
-    GenServer.cast(__MODULE__, {:pg_cdr_error, rowid})
-  end
+  # # Async mark CDR error
+  # def update_cdr_error(rowid) do
+  #   GenServer.cast(__MODULE__, {:pg_cdr_error, rowid})
+  # end
 
 end
