@@ -9,7 +9,7 @@ defmodule Collector do
 
   def init(state) do
     log_version()
-    Logger.info "[init] we will collect cdrs information from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+    Logger.info "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
     Process.send_after(self(), :timeout_1, 1 * 250) # 0.1 sec
@@ -19,8 +19,9 @@ defmodule Collector do
 
   def log_version() do
     {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
-    version = List.to_string(vsn)
-    Logger.info "[starting] excdr_pusher version (#{version})"
+    app_version = List.to_string(vsn)
+    {:elixir, _, ex_version} = List.keyfind(:application.which_applications, :elixir, 0)
+    Logger.info "[starting] excdr_pusher (app_version:#{app_version} - ex_version:#{ex_version})"
   end
 
   def handle_info(:timeout_1, state) do
@@ -31,7 +32,6 @@ defmodule Collector do
 
   def handle_info(:timeout_1sec, state) do
     Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
-    # IO.puts "1 sec"
     {:noreply, state}
   end
 

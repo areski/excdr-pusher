@@ -96,7 +96,7 @@ defmodule PusherPG do
     {:noreply, state}
   end
 
-  def terminate(reason, state) do
+  def terminate(_reason, _state) do
     # Do Shutdown Stuff
     # IO.puts "Going Down: #{inspect(state)}"
     Process.sleep(1000) #:timer.sleep(1000)
