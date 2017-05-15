@@ -69,7 +69,6 @@ defmodule ExCdrPusher.HSqlite do
   def count_cdr() do
     case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
-        fetchsql = "SELECT count(*) FROM cdr WHERE imported=0;"
         {:ok, count} = Sqlitex.query(db, "SELECT count(*) FROM cdr WHERE imported=0;")
         IO.puts "CDRs remaining: #{inspect count}"
     end

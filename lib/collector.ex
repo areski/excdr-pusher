@@ -12,8 +12,8 @@ defmodule Collector do
     Logger.info "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
-    Process.send_after(self(), :timeout_1, 1 * 250) # 0.1 sec
-    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
+    # Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
     {:ok, state}
   end
 
@@ -26,17 +26,16 @@ defmodule Collector do
 
   def handle_info(:timeout_1, state) do
     schedule_task() # Reschedule once more
-    Logger.info "[handle_info]"
     {:noreply, state}
   end
 
-  def handle_info(:timeout_1sec, state) do
-    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
-    {:noreply, state}
-  end
+  # def handle_info(:timeout_1sec, state) do
+  #   Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+  #   {:noreply, state}
+  # end
 
   defp schedule_task() do
-    Process.send_after(self(), :timeout_1, 1 * 250) # 0.1 sec
+    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()
     else

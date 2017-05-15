@@ -52,8 +52,9 @@ config :excdr_pusher,
   # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
   influxdatabase:  "newfiesdialer",
-  # Amount of CDRs to fetch every 0.25 second
-  amount_cdr_fetch: 100
+  # Amount of CDRs to fetch every 0.1 second
+  amount_cdr_fetch: 50
+  # 500 CDRs per second -> 30.000 per minute
   # 400 CDRs per second -> 24.000 per minute
 
 # Push to
