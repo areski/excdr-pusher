@@ -49,8 +49,9 @@ defmodule PusherPG do
   def insert_cdr(cdr_list) do
     cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
-    Logger.info "PG CDRs inserted (#{nb_inserted})"
-
+    if nb_inserted > 0 do
+      Logger.info "PG CDRs inserted (#{nb_inserted})"
+    end
     #
     # update CDR ID disabled / to implement it we need to use returning: true
     # and use the callid to know which Sqlite CDR to update

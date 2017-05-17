@@ -3,6 +3,8 @@ defmodule Collector do
   require Logger
   alias ExCdrPusher.HSqlite
 
+  @tick_freq 100 # 100ms
+
   def start_link(state, opts \\ []) do
     GenServer.start_link(__MODULE__, state, opts)
   end
@@ -12,7 +14,7 @@ defmodule Collector do
     Logger.info "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
-    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
+    Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
     # Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
     {:ok, state}
   end
@@ -35,7 +37,7 @@ defmodule Collector do
   # end
 
   defp schedule_task() do
-    Process.send_after(self(), :timeout_1, 1 * 100) # 0.1 sec
+    Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()
     else
