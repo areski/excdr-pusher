@@ -3,7 +3,8 @@ defmodule Collector do
   require Logger
   alias ExCdrPusher.HSqlite
 
-  @tick_freq 100 # 100ms
+  # @tick_freq 100 # 100ms
+  @tick_freq Application.fetch_env!(:excdr_pusher, :tick_frequency)
 
   def start_link(state, opts \\ []) do
     GenServer.start_link(__MODULE__, state, opts)
