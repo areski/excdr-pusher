@@ -5,14 +5,13 @@ After=syslog.target
 After=network.target
 After=postgresql.service
 After=redis.service
-#After=network.target freeswitch.service
+After=epmd.service
 
 [Service]
 Type=simple
 TimeoutSec=120
 User=root
 Group=daemon
-#
 Environment=MIX_ENV=prod PORT=8888 DB_HOST=127.0.0.1 DB_NAME=mydb DB_USER=myusername DB_PASSWORD=mypassword
 ExecStart=/app/excdr_pusher/bin/excdr_pusher start
 ExecStop=/app/excdr_pusher/bin/excdr_pusher stop
