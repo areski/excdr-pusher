@@ -24,7 +24,8 @@ defmodule Collector do
     {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
     app_version = List.to_string(vsn)
     {:elixir, _, ex_version} = List.keyfind(:application.which_applications, :elixir, 0)
-    Logger.info "[starting] excdr_pusher (app_version:#{app_version} - ex_version:#{ex_version})"
+    erl_version = :erlang.system_info(:otp_release)
+    Logger.error "[starting] excdr_pusher (app_version:#{app_version} - ex_version:#{ex_version} - erl_version:#{erl_version})"
   end
 
   def handle_info(:timeout_1, state) do

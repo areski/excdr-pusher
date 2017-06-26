@@ -36,16 +36,16 @@ config :logger,
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
-  path: "/var/log/excdr_pusher/elixir-error.log",
-  level: :error,
-  format: "$time $metadata[$level] $levelpad$message\n"
+  path: "/var/log/excdr_pusher/error.log",
+  level: :warn,
+  format: "$date $time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
 
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
-  path: "/var/log/excdr_pusher/elixir-debug.log",
-  level: :debug,
-  format: "$time $metadata[$level] $levelpad$message\n"
+  path: "/var/log/excdr_pusher/debug.log",
+  level: :info,
+  format: "$date $time $metadata[$level] $levelpad$message\n"
   # metadata: [:file, :line]
 
 
