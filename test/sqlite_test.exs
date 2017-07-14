@@ -5,7 +5,8 @@ defmodule SqliteCDRTest do
 
 
   setup_all do
-    {:ok, db} = Sqlitex.open('./data/freeswitchcdr.db')
+    # Test Database must use import_sqlite.sql to define his schema and data
+    {:ok, db} = Sqlitex.open('./data/freeswitchcdr-test.db')
     on_exit fn ->
       Sqlitex.close(db)
     end
@@ -15,7 +16,7 @@ defmodule SqliteCDRTest do
 
   test "a basic query returns a list of CDRs", context do
     {:ok, [row]} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 1")
-    assert row[:caller_id_name] == "Outbound Call"
+    assert row[:caller_id_name] == "0034650780000"
     # Fetch 2 records
     {:ok, rows} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 2")
     assert length(rows) == 2
@@ -23,13 +24,18 @@ defmodule SqliteCDRTest do
   end
 
   test "test sqlite_get_cdr return cdrs", context do
-    {:ok, cdrs} = HSqlite.sqlite_get_cdr()
-    assert length(cdrs) == 10
+    context[:testsqlite_db] |> Sqlitex.query("INSERT INTO cdr VALUES('Outbound Call','0034650780000','0034650780000','default','2016-09-20 10:14:37','2016-09-20 10:14:48','2016-09-20 10:15:00',23,12,'NORMAL_CLEARING','eb43ce0a-bd20-46aa-ba14-9a22d6d0193c','','',1,1681,'0.020000',6,'0034650780000','MACHINE','1',16, 1, '', 0, 0);")
+    {:ok, cdr_list} = HSqlite.fetch_cdr()
+    assert length(cdr_list) == 1
+
+    HSqlite.mark_cdr_imported(cdr_list)
+    {:ok, cdr_list} = HSqlite.fetch_cdr()
+    assert length(cdr_list) == 0
   end
 
   test "get timestamp", context do
     {:ok, [row]} = context[:testsqlite_db] |> Sqlitex.query("SELECT * FROM cdr LIMIT 1")
-    assert row[:start_uepoch] == 1477478486443963
+    assert row[:start_stamp] == {{2016, 9, 20}, {6, 20, 13, 0}}
   end
 
 end
