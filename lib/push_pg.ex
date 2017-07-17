@@ -20,7 +20,8 @@ defmodule PusherPG do
   def build_cdr_map(cdr) do
     # Sanitize CDR
     clean_cdr = Sanitizer.cdr(cdr)
-    # maybe we could move construction of %CDR to Sanitizer.cdr and kind of sanitize all the fields
+    # maybe we could move construction of %CDR to Sanitizer.cdr and
+    # kind of sanitize all the fields
     # so we use clean_cdr[:field_name_xy] everywhere
     %{
       callid: cdr[:uuid],

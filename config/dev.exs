@@ -5,7 +5,8 @@ use Mix.Config
 # tell logger to load a LoggerFileBackend processes
 config :logger,
   backends: [{LoggerFileBackend, :error_log},
-             {LoggerFileBackend, :debug_log}]
+             {LoggerFileBackend, :debug_log}],
+  compile_time_purge_level: :info
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
@@ -45,5 +46,16 @@ config :excdr_pusher, ExCdrPusher.InConnection,
   scheme:    "http",
   writer:    Instream.Writer.Line
 
-#If you need to load configuration from the environment at runtime, you will need to do something like the following:
-# my_setting = Application.get_env(:myapp, :setting) || System.get_env("MY_SETTING") || default_val
+if Mix.env == :dev do
+  config :mix_test_watch,
+    tasks: [
+      "test",
+      "credo -a --strict",
+      "dialyzer",
+    ]
+end
+
+# If you need to load configuration from the environment at runtime, you will
+# need to do something like the following:
+# my_setting = Application.get_env(:myapp, :setting) ||
+#     System.get_env("MY_SETTING") || default_val

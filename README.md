@@ -52,6 +52,23 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     MIX_ENV=prod mix release
 
 
+## Run tests
+
+You will need to install inotify-tools to use `mix test.watch`.
+`mix test.watch` will automatically run your Elixir project's tests each
+time you save a file (https://github.com/lpil/mix-test.watch)
+
+You will need (inotify-tools)[https://github.com/rvoicilas/inotify-tools/wiki]
+installed.
+
+
+## Code linter
+
+We use [Credo](https://github.com/rrrene/credo) as colinter
+
+    mix credo
+
+
 ## Start on reboot
 
 Add excdr_pusher to `systemd` on Debian 8.x:

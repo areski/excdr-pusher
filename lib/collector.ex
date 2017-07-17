@@ -3,6 +3,12 @@ defmodule Collector do
   require Logger
   alias ExCdrPusher.HSqlite
 
+  @moduledoc """
+  This module implement the heartbeat to retrieve the CDRs from the SQLite
+  and then push them to the Genserver in charge of sending the CDRs to
+  PostgreSQL
+  """
+
   # @tick_freq 100 # 100ms
   @tick_freq Application.fetch_env!(:excdr_pusher, :tick_frequency)
 
@@ -12,7 +18,8 @@ defmodule Collector do
 
   def init(state) do
     log_version()
-    Logger.info "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+    Logger.info "[init] start collecting CDRs from " <>
+      Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
     Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
@@ -20,12 +27,13 @@ defmodule Collector do
     {:ok, state}
   end
 
-  def log_version() do
+  def log_version do
     {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
     app_version = List.to_string(vsn)
-    {:elixir, _, ex_version} = List.keyfind(:application.which_applications, :elixir, 0)
+    {_, _, ex_ver} = List.keyfind(:application.which_applications, :elixir, 0)
     erl_version = :erlang.system_info(:otp_release)
-    Logger.error "[starting] excdr_pusher (app_version:#{app_version} - ex_version:#{ex_version} - erl_version:#{erl_version})"
+    Logger.error "[starting] excdr_pusher (app_version:#{app_version} - "
+      <> "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
   end
 
   def handle_info(:timeout_1, state) do
@@ -38,18 +46,19 @@ defmodule Collector do
   #   {:noreply, state}
   # end
 
-  defp schedule_task() do
+  defp schedule_task do
     Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()
     else
-      Logger.error "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+      Logger.error "Sqlite database not found: "
+        <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     end
     # current_date = :os.timestamp |> :calendar.now_to_datetime
     # Logger.debug "#{inspect current_date}"
   end
 
-  defp start_import() do
+  defp start_import do
     # HSqlite.count_cdr()
     {:ok, cdr_list} = HSqlite.fetch_cdr()
     HSqlite.mark_cdr_imported(cdr_list)
@@ -76,7 +85,7 @@ defmodule Collector do
   #   end
   # end
 
-  # Not used at the moment, as it was used by push_pg to update status on insert
+  # Not used at the moment, it was used by push_pg to update status on insert
   # def handle_cast({:pg_cdr_ok, rowid, pg_cdr_id}, state) do
   #   HSqlite.update_sqlite_cdr_ok(rowid, pg_cdr_id)
   #   {:noreply, state}

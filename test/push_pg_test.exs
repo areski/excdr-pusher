@@ -32,14 +32,14 @@ defmodule PusherPGTest do
     starting_date = Timex.Timezone.convert(dt, "UTC")
 
     assert PusherPG.build_cdr_map(cdr) == %{
-        amd_status: 2, billed_duration: 12, billsec: 12, call_cost: 0.02,
-        callerid: "0034650780000",
-        callid: "eb43ce0a-bd20-46aa-ba14-9a22d6d0193c",
-        callrequest_id: 1681, campaign_id: 1, disposition: "ANSWER",
-        duration: 23, hangup_cause: "NORMAL_CLEARING",
-        hangup_cause_q850: 16, leg_type: 1, phone_number: "0034650780000",
-        starting_date: starting_date,
-        used_gateway_id: 1
+      amd_status: 2, billed_duration: 12, billsec: 12, call_cost: 0.02,
+      callerid: "0034650780000",
+      callid: "eb43ce0a-bd20-46aa-ba14-9a22d6d0193c",
+      callrequest_id: 1681, campaign_id: 1, disposition: "ANSWER",
+      duration: 23, hangup_cause: "NORMAL_CLEARING",
+      hangup_cause_q850: 16, leg_type: 1, phone_number: "0034650780000",
+      starting_date: starting_date,
+      used_gateway_id: 1
     }
 
     # assert PusherPG.push("hello") == :ok

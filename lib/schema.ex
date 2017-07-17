@@ -1,6 +1,10 @@
 defmodule ExCdrPusher.CDR do
   use Ecto.Schema
 
+  @moduledoc """
+  Ecto CDR table definition
+  """
+
   # dialer_cdr is the DB table
   schema "dialer_cdr" do
     field :callid,            :string
@@ -28,21 +32,26 @@ end
 
 # alias ExCdrPusher.Repo
 # alias ExCdrPusher.CDR
-# newcdr = %CDR{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
+# newcdr = %CDR{callid: "xxx", callerid: "800000", phone_number: "650784355",
+# starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23,
+# min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
 # Repo.insert!(newcdr)
 
-# newcdr = %{callid: "xxx", callerid: "800000", phone_number: "650784355", starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
+# newcdr = %{callid: "xxx", callerid: "800000", phone_number: "650784355",
+# starting_date: %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23,
+# min: 50, sec: 07, usec: 0}, billed_duration: 0, call_cost: 0.0}
 # cdrs = [newcdr, newcdr]
 # Repo.insert!(newcdr)
 # Repo.insert_all(CDR, cdrs)
 
-# %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07, usec: 0}
+# %Ecto.DateTime{year: 2015, month: 1, day: 23, hour: 23, min: 50, sec: 07,
+# usec: 0}
 
 # mycdr = Repo.get(CDR, 50081)
 
 # [mycdr] = Repo.all(from(c in CDR, where: c.id == 42, preload: :post))
 
- # id                | integer                  | not null default nextval('dialer_cdr_id_seq'::regclass)
+ # id                | integer                  | not null default nextval
  # request_uuid      | character varying(120)   |
  # callid            | character varying(120)   | not null
  # callerid          | character varying(120)   | not null

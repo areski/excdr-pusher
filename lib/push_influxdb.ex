@@ -2,18 +2,25 @@ defmodule PushInfluxDB do
   use GenServer
   require Logger
 
+  alias ExCdrPusher.InConnection, as: InfluxCon
+
+  @moduledoc """
+  Genserver that push CDRs to InfluxDB, this module is not used at the moment
+  """
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
-
 
   # Insert CDR in batch
   def insert_cdr(cdr_list) do
     series = Enum.map(cdr_list, &build_series/1)
     # IO.inspect series
-    case series |> ExCdrPusher.InConnection.write([async: true, precision: :nanoseconds]) do
+    res = series |> InfluxCon.write([async: true, precision: :nanoseconds])
+    case res do
       :ok ->
-        Logger.info "wrote " <> (Enum.count(series) |> Integer.to_string) <> " points"
+        series_ct = series |> Enum.count
+        Logger.info "wrote #{series_ct} points"
       {:error, :econnrefused} ->
         Logger.error "error writing points"
       _  ->
@@ -24,9 +31,11 @@ defmodule PushInfluxDB do
   end
 
   # From Erlang 18:
-  def convert_start_uepoch_nano(""), do: :os.system_time(:milli_seconds) * 1000000
+  def convert_start_uepoch_nano(""), do:
+    :os.system_time(:milli_seconds) * 1_000_000
   # From Erlang 19.1:
-  # def convert_start_uepoch_nano(""), do: :os.system_time(:millisecond) * 1000000
+  # def convert_start_uepoch_nano(""), do:
+  #   :os.system_time(:millisecond) * 1_000_000
 
   def convert_start_uepoch_nano(value) do
     :rand.seed(:exs1024, :os.timestamp)
@@ -40,13 +49,14 @@ defmodule PushInfluxDB do
     Logger.info "ntime: #{ntime}"
 
     serie = %CDRDurationSeries{}
-    serie = %{ serie | timestamp: ntime }
-    serie = %{ serie | tags: %{ serie.tags | campaign_id: data[:campaign_id] }}
-    serie = %{ serie | fields: %{ serie.fields | value: data[:billsec] }}
+    serie = %{serie | timestamp: ntime}
+    serie = %{serie | tags: %{serie.tags | campaign_id: data[:campaign_id]}}
+    serie = %{serie | fields: %{serie.fields | value: data[:billsec]}}
     serie
     # ???
     # Build all series and return them all:
-    # CDRBilledDurationSeries, CDRCallCostSeries, CDRHangupCauseSeries, CDRHangupCauseQ850Series
+    # CDRBilledDurationSeries, CDRCallCostSeries, CDRHangupCauseSeries,
+    # CDRHangupCauseQ850Series
 
   end
 

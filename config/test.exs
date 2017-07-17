@@ -5,7 +5,8 @@ use Mix.Config
 # tell logger to load a LoggerFileBackend processes
 config :logger,
   backends: [{LoggerFileBackend, :error_log},
-             {LoggerFileBackend, :debug_log}]
+             {LoggerFileBackend, :debug_log}],
+  compile_time_purge_level: :info
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,

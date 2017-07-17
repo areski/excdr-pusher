@@ -1,6 +1,7 @@
 defmodule ExCdrPusher.Sanitizer do
 
   alias ExCdrPusher.Utils
+  alias Timex.Timezone, as: Timezone
 
   @moduledoc """
   This is the module to sanitize CDRs data
@@ -9,26 +10,30 @@ defmodule ExCdrPusher.Sanitizer do
   @doc """
   Prepare and sanitize CDR data.
 
-  We will clean and sanitize data coming from Sqlite and prepare them for PostgreSQL insertion.
+  We will clean and sanitize data coming from Sqlite and prepare them for
+  PostgreSQL insertion.
   """
   def cdr(cdr) do
     # get billed_duration
-    billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
+    billed_duration = Utils.calculate_billdur(cdr[:billsec],
+                                              cdr[:nibble_increment])
 
     # get cdr date
     # IO.inspect cdr[:start_stamp]
     {{year, month, day}, {hour, min, sec, 0}} = cdr[:start_stamp]
-    # cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour, min: min, sec: sec, usec: 0}
+    # cdrdate = %Ecto.DateTime{year: year, month: month, day: day, hour: hour,
+    # min: min, sec: sec, usec: 0}
     # Work with naiveDatetime...
     # {:ok, ndt} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
-    # {:ok, cdrdate} = NaiveDateTime.from_erl({{year, month, day}, {hour, min, sec}})
+    # {:ok, cdrdate} = NaiveDateTime.from_erl({{year, month, day},
+    # {hour, min, sec}})
     # dt = %DateTime{year: 2000, month: 2, day: 29, zone_abbr: "CET",
     #             hour: 23, minute: 0, second: 7, microsecond: {0, 0},
     #             utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"}
 
     # Using Timex and convert from local timezone to UTC
     dt = Timex.to_datetime({{year, month, day}, {hour, min, sec}}, :local)
-    cdrdate = Timex.Timezone.convert(dt, "UTC")
+    cdrdate = Timezone.convert(dt, "UTC")
 
     # get legtype
     legtype = Utils.convert_int(cdr[:legtype], 1)
@@ -43,11 +48,12 @@ defmodule ExCdrPusher.Sanitizer do
     disposition = Utils.get_disposition(cdr[:hangup_cause])
 
     # get hangup_cause_q850
-    hangup_cause_q850 = Utils.convert_int(cdr[:hangup_cause_q850], 0)
+    hc_q850 = Utils.convert_int(cdr[:hangup_cause_q850], 0)
 
-    # on transfer the disposition & hangup_cause_q850 needs to be manually corrected
-    {disposition, hangup_cause_q850} = Utils.fix_hangup_cause_aleg(disposition, hangup_cause_q850, cdr[:billsec])
-
+    # on transfer the disposition & hc_q850 needs to be corrected
+    {disposition, hc_q850} = Utils.adjust_aleg(disposition,
+                                               hc_q850,
+                                               cdr[:billsec])
     # get user_id
     user_id = clean_id(cdr[:user_id])
 
@@ -61,7 +67,7 @@ defmodule ExCdrPusher.Sanitizer do
       amd_status: amd_status,
       nibble_total_billed: nibble_total_billed,
       disposition: disposition,
-      hangup_cause_q850: hangup_cause_q850,
+      hangup_cause_q850: hc_q850,
       user_id: user_id,
       campaign_id: campaign_id,
     }

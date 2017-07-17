@@ -1,4 +1,7 @@
 defmodule ExCdrPusher.Utils do
+  @moduledoc """
+  This module contains a misc of useful functions
+  """
 
   @doc ~S"""
   Convert to int and default to 0
@@ -76,22 +79,20 @@ defmodule ExCdrPusher.Utils do
   propagated from bleg to aleg...
 
   ## Example
-    iex> ExCdrPusher.Utils.fix_hangup_cause_aleg("ANSWER", 16, 10)
+    iex> ExCdrPusher.Utils.adjust_aleg("ANSWER", 16, 10)
     {"ANSWER", 16}
-    iex> ExCdrPusher.Utils.fix_hangup_cause_aleg("BUSY", 17, 18)
+    iex> ExCdrPusher.Utils.adjust_aleg("BUSY", 17, 18)
     {"ANSWER", 16}
-    iex> ExCdrPusher.Utils.fix_hangup_cause_aleg("BUSY", 17, 0)
+    iex> ExCdrPusher.Utils.adjust_aleg("BUSY", 17, 0)
     {"BUSY", 17}
   """
-  def fix_hangup_cause_aleg(disposition, hangup_cause_q850, billsec) do
-    cond do
-      billsec > 0 ->
-        {"ANSWER", 16}
-      true ->
-        {disposition, hangup_cause_q850}
+  def adjust_aleg(disposition, hangup_cause_q850, billsec) do
+    if billsec > 0 do
+      {"ANSWER", 16}
+    else
+      {disposition, hangup_cause_q850}
     end
   end
-
 
   @doc ~S"""
   Transform disposition

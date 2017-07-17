@@ -5,7 +5,8 @@ use Mix.Config
 # tell logger to load a LoggerFileBackend processes
 config :logger,
   backends: [{LoggerFileBackend, :error_log},
-             {LoggerFileBackend, :debug_log}]
+             {LoggerFileBackend, :debug_log}],
+  compile_time_purge_level: :warn
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
@@ -35,7 +36,8 @@ config :excdr_pusher,
 # Push to
 config :excdr_pusher, ExCdrPusher.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME"
+  url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME",
+  pool_size: 10
 
 # InfluxDB configuration
 config :excdr_pusher, ExCdrPusher.InConnection,

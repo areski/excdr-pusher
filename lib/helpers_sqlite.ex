@@ -1,25 +1,36 @@
 defmodule ExCdrPusher.HSqlite do
 
   require Logger
+  alias Application, as: App
 
-  def fetch_cdr() do
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+  @moduledoc """
+  This module contains method to communicate with SQLite CDRs storage.
+  """
+
+  def fetch_cdr do
+    case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
-        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
+        fetchsql =
+          "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
         # IO.puts "fetchsql:" <> fetchsql
-        Sqlitex.query(db, fetchsql, bind: [Application.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
+        Sqlitex.query(db,
+                      fetchsql,
+                      bind: [App.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
       {:error, reason} ->
         Logger.error reason
         {:error}
     end
   end
 
-  # def sqlite_create_fields() do
-  #   case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+  # def sqlite_create_fields do
+  #   case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
   #     {:ok, db} ->
-  #       Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
-  #       Sqlitex.query(db, "ALTER TABLE cdr ADD COLUMN pg_cdr_id INTEGER DEFAULT 0;")
-  #       Sqlitex.query(db, "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
+  #       Sqlitex.query(db,
+  #         "ALTER TABLE cdr ADD COLUMN imported INTEGER DEFAULT 0;")
+  #       Sqlitex.query(db,
+  #         "ALTER TABLE cdr ADD COLUMN pg_cdr_id INTEGER DEFAULT 0;")
+  #       Sqlitex.query(db,
+  #         "CREATE INDEX IF NOT EXISTS cdr_imported ON cdr (imported);")
   #     {:error, reason} ->
   #       Logger.error reason
   #       {:error}
@@ -28,12 +39,14 @@ defmodule ExCdrPusher.HSqlite do
 
   # Mark those CDRs as imported to not fetch them twice
   def mark_cdr_imported(cdrs) do
-    Logger.debug "Mark CDRs: #{length(cdrs)}"
+    Logger.debug fn ->
+      "Mark CDRs: #{length(cdrs)}"
+    end
     ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
-    questmarks = Enum.map(ids, fn(_) -> "?" end) |> Enum.join(", ")
+    questmarks = ids |> Enum.map(fn(_) -> "?" end) |> Enum.join(", ")
     sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
     # IO.puts sql
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+    case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: ids)
       {:error, reason} ->
@@ -43,9 +56,11 @@ defmodule ExCdrPusher.HSqlite do
   end
 
   def update_sqlite_cdr_ok(rowid, pg_cdr_id) do
-    Logger.info "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
+    Logger.debug fn ->
+      "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
+    end
     sql = "UPDATE cdr SET imported=1, pg_cdr_id=? WHERE OID=?"
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+    case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: [pg_cdr_id, rowid])
       {:error, reason} ->
@@ -55,9 +70,11 @@ defmodule ExCdrPusher.HSqlite do
   end
 
   def update_sqlite_cdr_error(rowid) do
-    Logger.debug "CDR not imported rowid:#{rowid}"
+    Logger.debug fn ->
+      "CDR not imported rowid:#{rowid}"
+    end
     sql = "UPDATE cdr SET imported=0 WHERE OID=?"
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+    case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: rowid)
       {:error, reason} ->
@@ -66,8 +83,8 @@ defmodule ExCdrPusher.HSqlite do
     end
   end
 
-  def count_cdr() do
-    case Sqlitex.open(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
+  def count_cdr do
+    case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         {:ok, count} = Sqlitex.query(db, "SELECT count(*) FROM cdr WHERE imported=0;")
         IO.puts "CDRs remaining: #{inspect count}"
