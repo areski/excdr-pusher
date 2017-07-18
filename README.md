@@ -58,7 +58,7 @@ You will need to install inotify-tools to use `mix test.watch`.
 `mix test.watch` will automatically run your Elixir project's tests each
 time you save a file (https://github.com/lpil/mix-test.watch)
 
-You will need (inotify-tools)[https://github.com/rvoicilas/inotify-tools/wiki]
+You will need [inotify-tools](https://github.com/rvoicilas/inotify-tools/wiki)
 installed.
 
 
@@ -85,6 +85,5 @@ List of improvements and tasks,
 
 - [ ] Repo.insert_all make genserver crash on error, so we need to find a way to capture error, and uncommit the sqlite CDRs that were fetched, this will ensure that on error we can do something, maybe flag the CDRs as errors for future checks
 - [ ] use [conform](https://github.com/bitwalker/conform) to support config file
-- [ ] install script to quickly deploy
 - [ ] add inch_ex
-- [ ] add credo - https://github.com/rrrene/credo
+- [x] add credo - https://github.com/rrrene/credo
