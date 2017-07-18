@@ -79,46 +79,18 @@ defmodule ExCdrPusher.Utils do
   propagated from bleg to aleg...
 
   ## Example
-    iex> ExCdrPusher.Utils.adjust_aleg("ANSWER", 16, 10)
-    {"ANSWER", 16}
-    iex> ExCdrPusher.Utils.adjust_aleg("BUSY", 17, 18)
-    {"ANSWER", 16}
-    iex> ExCdrPusher.Utils.adjust_aleg("BUSY", 17, 0)
-    {"BUSY", 17}
+    iex> ExCdrPusher.Utils.adjust_aleg(16, 10)
+    {16}
+    iex> ExCdrPusher.Utils.adjust_aleg(17, 18)
+    {16}
+    iex> ExCdrPusher.Utils.adjust_aleg(17, 0)
+    {17}
   """
-  def adjust_aleg(disposition, hangup_cause_q850, billsec) do
+  def adjust_aleg(hangup_cause_q850, billsec) do
     if billsec > 0 do
-      {"ANSWER", 16}
+      {16}
     else
-      {disposition, hangup_cause_q850}
-    end
-  end
-
-  @doc ~S"""
-  Transform disposition
-
-  ## Example
-    iex> ExCdrPusher.Utils.get_disposition("NORMAL_CLEARING")
-    "ANSWER"
-    iex> ExCdrPusher.Utils.get_disposition("USER_BUSY")
-    "BUSY"
-  """
-  def get_disposition(hangup_cause) do
-    case hangup_cause do
-      "NORMAL_CLEARING" ->
-        "ANSWER"
-      "ALLOTTED_TIMEOUT" ->
-        "ANSWER"
-      "USER_BUSY" ->
-        "BUSY"
-      "NO_ANSWER" ->
-        "NOANSWER"
-      "ORIGINATOR_CANCEL" ->
-        "CANCEL"
-      "NORMAL_CIRCUIT_CONGESTION" ->
-        "CONGESTION"
-      _ ->
-        "FAILED"
+      {hangup_cause_q850}
     end
   end
 

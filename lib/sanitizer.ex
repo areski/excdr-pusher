@@ -44,16 +44,11 @@ defmodule ExCdrPusher.Sanitizer do
     # get nibble_total_billed
     nibble_total_billed = Utils.convert_float(cdr[:nibble_total_billed], 0.0)
 
-    # get disposition
-    disposition = Utils.get_disposition(cdr[:hangup_cause])
-
     # get hangup_cause_q850
     hc_q850 = Utils.convert_int(cdr[:hangup_cause_q850], 0)
+    # on transfer hc_q850 needs to be corrected
+    {hc_q850} = Utils.adjust_aleg(hc_q850, cdr[:billsec])
 
-    # on transfer the disposition & hc_q850 needs to be corrected
-    {disposition, hc_q850} = Utils.adjust_aleg(disposition,
-                                               hc_q850,
-                                               cdr[:billsec])
     # get user_id
     user_id = clean_id(cdr[:user_id])
 
@@ -66,7 +61,6 @@ defmodule ExCdrPusher.Sanitizer do
       legtype: legtype,
       amd_status: amd_status,
       nibble_total_billed: nibble_total_billed,
-      disposition: disposition,
       hangup_cause_q850: hc_q850,
       user_id: user_id,
       campaign_id: campaign_id,

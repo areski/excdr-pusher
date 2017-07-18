@@ -14,7 +14,6 @@ newfies_dialer_db=# \d dialer_cdr
  progresssec       | integer                  |
  answersec         | integer                  |
  waitsec           | integer                  |
- disposition       | character varying(40)    |
  hangup_cause      | character varying(40)    |
  hangup_cause_q850 | character varying(10)    |
  leg_type          | smallint                 |
@@ -51,7 +50,6 @@ billsec           | 0
 progresssec       |
 answersec         |
 waitsec           |
-disposition       | BUSY
 hangup_cause      | USER_BUSY
 hangup_cause_q850 |
 leg_type          | 1
@@ -73,7 +71,6 @@ billsec           | 0
 progresssec       |
 answersec         |
 waitsec           |
-disposition       | BUSY
 hangup_cause      | USER_BUSY
 hangup_cause_q850 |
 leg_type          | 1
@@ -95,7 +92,6 @@ billsec           | 0
 progresssec       |
 answersec         |
 waitsec           |
-disposition       | FAILED
 hangup_cause      | NORMAL_TEMPORARY_FAILURE
 hangup_cause_q850 |
 leg_type          | 2
@@ -117,7 +113,6 @@ billsec           | 12
 progresssec       |
 answersec         |
 waitsec           |
-disposition       | ANSWER
 hangup_cause      | NORMAL_CLEARING
 hangup_cause_q850 |
 leg_type          | 1

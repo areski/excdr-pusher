@@ -30,7 +30,6 @@ defmodule PusherPG do
       starting_date: clean_cdr[:cdrdate],
       duration: cdr[:duration],
       billsec: cdr[:billsec],
-      disposition: clean_cdr[:disposition],
       hangup_cause: cdr[:hangup_cause],
       hangup_cause_q850: clean_cdr[:hangup_cause_q850],
       leg_type: clean_cdr[:legtype],

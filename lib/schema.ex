@@ -16,7 +16,6 @@ defmodule ExCdrPusher.CDR do
     field :starting_date,     Timex.Ecto.DateTime
     field :duration,          :integer, default: 0
     field :billsec,           :integer, default: 0
-    field :disposition,       :string
     field :hangup_cause,      :string
     field :hangup_cause_q850, :integer, default: 0
     field :leg_type,          :integer
@@ -62,7 +61,6 @@ end
  # progresssec       | integer                  |
  # answersec         | integer                  |
  # waitsec           | integer                  |
- # disposition       | character varying(40)    |
  # hangup_cause      | character varying(40)    |
  # hangup_cause_q850 | character varying(10)    |
  # leg_type          | smallint                 |
