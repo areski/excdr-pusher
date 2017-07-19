@@ -34,6 +34,7 @@ defmodule Collector do
     erl_version = :erlang.system_info(:otp_release)
     Logger.error "[starting] excdr_pusher (app_version:#{app_version} - "
       <> "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
+    Logger.error "[config] tick_freq:#{@tick_freq}"
   end
 
   def handle_info(:timeout_1, state) do

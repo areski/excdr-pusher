@@ -29,7 +29,7 @@ defmodule ExCdrPusher do
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [
-      strategy: :one_for_one, max_restarts: 10,
+      strategy: :one_for_one, max_restarts: 100,
       max_seconds: 5, name: ExCdrPusher.Supervisor
     ]
     Supervisor.start_link(children, opts)

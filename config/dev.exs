@@ -29,7 +29,7 @@ config :excdr_pusher,
   # ms Time between fetchs (in millisecond)
   tick_frequency: 50,
   # Amount of CDRs to fetch every tick_frequency
-  amount_cdr_fetch: 1
+  amount_cdr_fetch: 10
   # 500 CDRs per second -> 30.000 per minute
 
 # Push to
