@@ -6,6 +6,11 @@ defmodule PusherPGTest do
   #   {:ok, genserver: genserver}
   # end
 
+  setup do
+    # Explicitly get a connection before each test
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ExCdrPusher.Repo)
+  end
+
   test "the truth" do
     assert 1 + 1 == 2
   end
@@ -53,4 +58,21 @@ defmodule PusherPGTest do
     # KV.Bucket.put(bucket, "milk", 1)
     # assert KV.Bucket.get(bucket, "milk") == 1
   end
+
+  test "test push_cdr insert" do
+    assert 1 == 1
+    cdr_list = [[rowid: 653039, caller_id_name: "Outbound Call", caller_id_number: "17143604044", destination_number: "17143604044", context: "default", start_stamp: {{2016, 9, 27}, {17, 39, 35, 0}}, answer_stamp: {{2016, 9, 27}, {17, 39, 50, 0}}, end_stamp: {{2016, 9, 27}, {17, 39, 55, 0}}, duration: 20, billsec: 5, hangup_cause: "NORMAL_CLEARING", uuid: "0ad67b59-56d4-4df4-b491-cd30e836838e", bleg_uuid: "", account_code: "", user_id: "", used_gateway_id: 5, callrequest_id: 119102339, nibble_total_billed: "0.001000", nibble_increment: 6, dialout_phone_number: "17143604044", amd_status: "machine", legtype: "1", hangup_cause_q850: 16, imported: 0, pg_cdr_id: 0, campaign_id: 139, start_uepoch: 1474997975000000, answer_uepoch: nil, amd_result: "PERSON"]]
+
+    {:ok, nb_inserted} = PusherPG.insert_cdr(cdr_list)
+    assert nb_inserted == 1
+  end
+
+  test "test insert many with error" do
+    assert 1 == 1
+    cdr_list = [[rowid: 653039, caller_id_name: "Outbound Call", caller_id_number: "17143604044", destination_number: "17143604044", context: "default", start_stamp: {{2016, 9, 27}, {17, 39, 35, 0}}, answer_stamp: {{2016, 9, 27}, {17, 39, 50, 0}}, end_stamp: {{2016, 9, 27}, {17, 39, 55, 0}}, duration: 20, billsec: 5, hangup_cause: "NORMAL_CLEARING", uuid: "0ad67b59-56d4-4df4-b491-cd30e836838e", bleg_uuid: "", account_code: "", user_id: "", used_gateway_id: 5, callrequest_id: 119102339, nibble_total_billed: "0.001000", nibble_increment: 6, dialout_phone_number: "17143604044", amd_status: "machine", legtype: "1", hangup_cause_q850: 16, imported: 0, pg_cdr_id: 0, campaign_id: 139, start_uepoch: 1474997975000000, answer_uepoch: nil, amd_result: "PERSON"]]
+
+    {:ok, nb_inserted} = PusherPG.insert_cdr(cdr_list)
+    assert nb_inserted == 1
+  end
+
 end

@@ -34,8 +34,9 @@ config :excdr_pusher,
 # Push to
 config :excdr_pusher, ExCdrPusher.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME",
-  pool_size: 10
+  url: "postgres://postgres:password@localhost/newfiesdb",
+  pool_size: 10,
+  pool: Ecto.Adapters.SQL.Sandbox
 
 # InfluxDB configuration
 config :excdr_pusher, ExCdrPusher.InConnection,
