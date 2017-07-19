@@ -6,7 +6,7 @@ use Mix.Config
 config :logger,
   backends: [{LoggerFileBackend, :error_log},
              {LoggerFileBackend, :debug_log}],
-  compile_time_purge_level: :warn
+  compile_time_purge_level: :info
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
