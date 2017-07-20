@@ -22,8 +22,8 @@ defmodule Collector do
       Application.fetch_env!(:excdr_pusher, :sqlite_db)
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
-    Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
-    # Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    Process.send_after(self(), :timeout_tick, @tick_freq) # 0.1 sec
+    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
     {:ok, state}
   end
 
@@ -37,18 +37,19 @@ defmodule Collector do
     Logger.error "[config] tick_freq:#{@tick_freq}"
   end
 
-  def handle_info(:timeout_1, state) do
+  def handle_info(:timeout_tick, state) do
     schedule_task() # Reschedule once more
     {:noreply, state}
   end
 
-  # def handle_info(:timeout_1sec, state) do
-  #   Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
-  #   {:noreply, state}
-  # end
+  def handle_info(:timeout_1sec, state) do
+    Logger.warn "(check alive) 1s heartbeat"
+    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    {:noreply, state}
+  end
 
   defp schedule_task do
-    Process.send_after(self(), :timeout_1, @tick_freq) # 0.1 sec
+    Process.send_after(self(), :timeout_tick, @tick_freq) # 0.1 sec
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()
     else
