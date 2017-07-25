@@ -7,7 +7,7 @@ defmodule ExCdrPusher.CDR do
 
   # dialer_cdr is the DB table
   schema "dialer_cdr" do
-    field :callid,            :string
+    field :callid,            Ecto.UUID
     field :callerid,          :string
     field :phone_number,      :string
     # field :starting_date,     :utc_datetime
@@ -16,12 +16,12 @@ defmodule ExCdrPusher.CDR do
     field :starting_date,     Timex.Ecto.DateTime
     field :duration,          :integer, default: 0
     field :billsec,           :integer, default: 0
-    field :hangup_cause,      :string
+    # field :hangup_cause,      :string
     field :hangup_cause_q850, :integer, default: 0
     field :leg_type,          :integer
     field :amd_status,        :integer
     field :callrequest_id,    :integer
-    field :used_gateway_id,   :integer
+    # field :used_gateway_id,   :integer
     # field :user_id,           :integer
     field :campaign_id,       :integer
     field :billed_duration,   :integer
@@ -58,15 +58,10 @@ end
  # starting_date     | timestamp with time zone | not null
  # duration          | integer                  |
  # billsec           | integer                  |
- # progresssec       | integer                  |
- # answersec         | integer                  |
- # waitsec           | integer                  |
- # hangup_cause      | character varying(40)    |
  # hangup_cause_q850 | character varying(10)    |
  # leg_type          | smallint                 |
  # amd_status        | smallint                 |
  # callrequest_id    | integer                  |
- # used_gateway_id   | integer                  |
  # billed_duration   | integer                  | not null
  # call_cost         | numeric(10,5)            | not null
  # campaign_id       | integer                  |
