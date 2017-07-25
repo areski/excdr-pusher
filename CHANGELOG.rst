@@ -3,10 +3,18 @@
 History
 -------
 
+
+0.6.0 - (2017-07-25)
+--------------------
+
+* [fix](cdr) refactor remove fields hangup_cause, used_gateway_id from CDR
+
+
 0.5.0 - (2017-07-18)
 --------------------
 
 * [fix](cdr) get rid of disposition field in dialer_cdr
+* smaller changes: improve test suits, add pool_size, etc...
 
 
 0.4.2 - (2017-07-18)
