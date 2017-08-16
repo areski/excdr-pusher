@@ -72,4 +72,23 @@ defmodule PusherPGTest do
     assert nb_inserted == 11
   end
 
+  test "test build_select_retry" do
+    cdr_list = [rowid: 2210298, caller_id_name: "", caller_id_number: "16502636531", destination_number: "12094282743", context: "default", start_stamp: {{2017, 7, 19}, {10, 3, 48, 0}}, answer_stamp: nil, end_stamp: {{2017, 7, 19}, {10, 3, 56, 0}}, duration: 8, billsec: 0, uuid: "d68fa513-c087-41c1-b2a0-afed8b62d726", bleg_uuid: "", account_code: "", start_uepoch: 1500483828069576, answer_uepoch: 0, user_id: 4, callrequest_id: 25808191, nibble_total_billed: "", nibble_increment: 6, dialout_phone_number: "+12094282743", amd_result: "", legtype: "1", hangup_cause_q850: 18, campaign_id: 164, imported: 0, pg_cdr_id: 0]
+
+    sql_retry = PusherPG.build_select_retry(cdr_list)
+    assert sql_retry == "process_cdr_retry(25808191, 164, 1, 18, 0)"
+  end
+
+  test "test build_select_retry with array" do
+    cdr_list = [[rowid: 2210298, caller_id_name: "", caller_id_number: "16502636531", destination_number: "12094282743", context: "default", start_stamp: {{2017, 7, 19}, {10, 3, 48, 0}}, answer_stamp: nil, end_stamp: {{2017, 7, 19}, {10, 3, 56, 0}}, duration: 8, billsec: 0, uuid: "d68fa513-c087-41c1-b2a0-afed8b62d726", bleg_uuid: "", account_code: "", start_uepoch: 1500483828069576, answer_uepoch: 0, user_id: 4, callrequest_id: 25808191, nibble_total_billed: "", nibble_increment: 6, dialout_phone_number: "+12094282743", amd_result: "", legtype: "1", hangup_cause_q850: 18, campaign_id: 164, imported: 0, pg_cdr_id: 0], [rowid: 2210298, caller_id_name: "", caller_id_number: "16502636531", destination_number: "12094282743", context: "default", start_stamp: {{2017, 7, 19}, {10, 3, 48, 0}}, answer_stamp: nil, end_stamp: {{2017, 7, 19}, {10, 3, 56, 0}}, duration: 8, billsec: 0, uuid: "d68fa513-c087-41c1-b2a0-afed8b62d726", bleg_uuid: "", account_code: "", start_uepoch: 1500483828069576, answer_uepoch: 0, user_id: 4, callrequest_id: 25808191, nibble_total_billed: "", nibble_increment: 6, dialout_phone_number: "+12094282743", amd_result: "", legtype: "1", hangup_cause_q850: 18, campaign_id: 164, imported: 0, pg_cdr_id: 0]]
+
+    assert PusherPG.build_sql_select_retry(cdr_list) == "SELECT process_cdr_retry(25808191, 164, 1, 18, 0), process_cdr_retry(25808191, 164, 1, 18, 0)"
+  end
+
+  test "raw query" do
+    result = Ecto.Adapters.SQL.query!(ExCdrPusher.Repo, "SELECT NOW()")
+    assert result.num_rows == 1
+    # assert result.rows == 1
+  end
+
 end

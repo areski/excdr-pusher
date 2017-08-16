@@ -4,6 +4,12 @@ History
 -------
 
 
+0.7.0 - (2017-07-25)
+--------------------
+
+* [fix](cdr) split the insert and the function plpgsql call
+
+
 0.6.0 - (2017-07-25)
 --------------------
 

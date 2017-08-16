@@ -44,6 +44,23 @@ defmodule PusherPG do
   end
 
   @doc """
+  Build Select to process retry
+  """
+  def build_select_retry(cdr) do
+    clean_cdr = Sanitizer.cdr(cdr)
+    "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
+    "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
+  end
+
+  @doc """
+  Build and run custom SQL
+  """
+  def build_sql_select_retry(cdrs) do
+    sql_retry = cdrs |> Enum.map(&build_select_retry/1) |> Enum.join(", ")
+    "SELECT " <> sql_retry
+  end
+
+  @doc """
   Insert CDR in batch
   """
   def insert_cdr(cdr_list) do
@@ -51,6 +68,12 @@ defmodule PusherPG do
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
     if nb_inserted > 0 do
       Logger.info "PG CDRs inserted (#{nb_inserted})"
+
+      sql_retry = build_sql_select_retry(cdr_list)
+      # Run SQL
+      result = Ecto.Adapters.SQL.query!(Repo, sql_retry)
+      # Logger.info "#{sql_retry}"
+      # Logger.info "PG CDRs Select (#{result.num_rows} - #{inspect result.rows})"
     end
     #
     # update CDR ID disabled / to implement it we need to use returning: true
