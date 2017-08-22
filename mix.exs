@@ -24,22 +24,22 @@ defmodule ExCdrPusher.Mixfile do
   # Dependencies
   defp deps do
     [
-     {:ex_doc, "~> 0.16.2", only: :dev},
-     {:distillery, "~> 1.4.1"},
-     # {:sqlitex, path: "../sqlitex"},
-     {:sqlitex, "~> 1.3.2"},
-     {:ecto, "~> 2.1.4"},
-     {:postgrex, ">= 0.0.0"},
-     {:logger_file_backend, "0.0.10"},
-     {:instream, "~> 0.15"},
-     {:swab, github: "crownedgrouse/swab", branch: "master"},
-     {:timex, "~> 3.1.23"},
-     {:timex_ecto, "~> 3.1.1"},
-     {:tzdata, "~> 0.5.11"},
-     # used test and code style,
-     {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
-     {:credo, "~> 0.8.4", only: [:dev, :test], runtime: false}
-     # {:dogma, "~> 0.1", only: :dev},
+      {:ex_doc, "~> 0.16.2", only: :dev},
+      {:distillery, "~> 1.4.1"},
+      # {:sqlitex, path: "../sqlitex"},
+      {:sqlitex, "~> 1.3.2"},
+      {:ecto, "~> 2.1.4"},
+      {:postgrex, ">= 0.0.0"},
+      {:logger_file_backend, "0.0.10"},
+      {:instream, "~> 0.15"},
+      {:swab, github: "crownedgrouse/swab", branch: "master"},
+      {:timex, "~> 3.1.23"},
+      {:timex_ecto, "~> 3.1.1"},
+      {:tzdata, "~> 0.5.11"},
+      # used test and code style,
+      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
+      {:credo, "~> 0.8.4", only: [:dev, :test], runtime: false}
+      # {:dogma, "~> 0.1", only: :dev},
     ]
   end
 
