@@ -47,15 +47,6 @@ config :excdr_pusher, ExCdrPusher.InConnection,
   scheme:    "http",
   writer:    Instream.Writer.Line
 
-if Mix.env == :dev do
-  config :mix_test_watch,
-    tasks: [
-      "test",
-      "credo -a --strict",
-      "dialyzer",
-    ]
-end
-
 # If you need to load configuration from the environment at runtime, you will
 # need to do something like the following:
 # my_setting = Application.get_env(:myapp, :setting) ||

@@ -37,7 +37,7 @@ defmodule ExCdrPusher.Mixfile do
       {:timex_ecto, "~> 3.1.1"},
       {:tzdata, "~> 0.5.11"},
       # used test and code style,
-      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.4", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
