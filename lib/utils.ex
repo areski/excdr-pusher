@@ -79,18 +79,32 @@ defmodule ExCdrPusher.Utils do
   propagated from bleg to aleg...
 
   ## Example
-    iex> ExCdrPusher.Utils.adjust_aleg(16, 10)
-    {16}
-    iex> ExCdrPusher.Utils.adjust_aleg(17, 18)
-    {16}
-    iex> ExCdrPusher.Utils.adjust_aleg(17, 0)
-    {17}
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 10, 'NORMAL_CLEARING')
+    16
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 18, 'NORMAL_CLEARING')
+    16
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 0, 'BUSY')
+    17
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'LOSE_RACE')
+    502
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'ORIGINATOR_CANCEL')
+    487
   """
-  def adjust_aleg(hangup_cause_q850, billsec) do
-    if billsec > 0 do
-      {16}
+  def sanitize_hangup_cause(hangup_cause_q850, billsec, hangup_cause) do
+    # If billsec is position then we should have a normal call -> 16
+    hangup_cause_q850 = if billsec > 0 do
+      16
     else
-      {hangup_cause_q850}
+      convert_int(hangup_cause_q850, 0)
+    end
+    # Fix Callcenter
+    case hangup_cause do
+      "LOSE_RACE" ->
+        502
+      "ORIGINATOR_CANCEL" ->
+        487
+      _ ->
+        hangup_cause_q850
     end
   end
 

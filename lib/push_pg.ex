@@ -51,7 +51,6 @@ defmodule PusherPG do
   Build Select to process retry
   """
   def build_select_retry(cdr) do
-    # TODO: Only for aleg, no need to check for retry on bleg??
     clean_cdr = Sanitizer.cdr(cdr)
     if clean_cdr[:legtype] == 1 do
       "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
