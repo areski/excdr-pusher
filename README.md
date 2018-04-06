@@ -4,33 +4,42 @@
 Collect and push CDRs from [FreeSWITCH](https://freeswitch.org/) Sqlite to PostgreSQL.
 
 
+## Usage Dev
+
+Run dev:
+
+  MIX_ENV=dev iex -S mix
+
+Check outdated deps:
+
+  mix hex.outdated
+
+
+## Usage Test
+
+Run test.watch:
+
+  MIX_ENV=dev mix test.watch
+
+
+## Usage Prod
+
+Compile and release:
+
+  MIX_ENV=prod mix compile
+  # MIX_ENV=prod mix release.init
+  MIX_ENV=prod mix release --verbose
+
+
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
-
-1. Add `excdr_pusher` to your list of dependencies in `mix.exs`:
-
-    ```elixir
-    def deps do
-      [{:excdr_pusher, "~> 0.1.0"}]
-    end
-    ```
-
-2. Ensure `excdr_pusher` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:excdr_pusher]]
-    end
-    ```
-
-3. Create directory for logs:
+1. Create directory for logs:
 
     ```
     mkdir /var/log/excdr_pusher
     ```
 
-4. Add host in your `/etc/hosts` eg:
+2. Add host in your `/etc/hosts` eg:
 
     ```
     127.0.0.1     influxdb_host

@@ -14,6 +14,10 @@ defmodule PusherPG do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def init(args) do
+    {:ok, args}
+  end
+
   @doc """
   Build CDR Map
   """
@@ -47,9 +51,12 @@ defmodule PusherPG do
   Build Select to process retry
   """
   def build_select_retry(cdr) do
+    # TODO: Only for aleg, no need to check for retry on bleg??
     clean_cdr = Sanitizer.cdr(cdr)
-    "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
-    "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
+    if clean_cdr[:legtype] == 1 do
+      "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
+      "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
+    end
   end
 
   @doc """
@@ -72,8 +79,7 @@ defmodule PusherPG do
       sql_retry = build_sql_select_retry(cdr_list)
       # Run SQL
       result = Ecto.Adapters.SQL.query!(Repo, sql_retry)
-      # Logger.info "#{sql_retry}"
-      # Logger.info "PG CDRs Select (#{result.num_rows} - #{inspect result.rows})"
+      Logger.debug "PG CDRs Retry (#{result.num_rows} - #{inspect result.rows})"
     end
     #
     # update CDR ID disabled / to implement it we need to use returning: true
