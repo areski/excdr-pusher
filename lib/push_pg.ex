@@ -70,9 +70,10 @@ defmodule PusherPG do
   """
   def build_select_retry(cdr) do
     clean_cdr = Sanitizer.cdr(cdr)
+
     if clean_cdr[:legtype] == 1 do
       "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
-      "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
+        "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
     end
   end
 
@@ -90,16 +91,19 @@ defmodule PusherPG do
   def insert_cdr(cdr_list) do
     cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
+
     if nb_inserted > 0 do
-      Logger.info "PG CDRs inserted (#{nb_inserted})"
+      Logger.info("PG CDRs inserted (#{nb_inserted})")
 
       sql_retry = build_sql_select_retry(cdr_list)
       # Run SQL
       result = Ecto.Adapters.SQL.query!(Repo, sql_retry)
-      Logger.debug fn ->
-        "PG CDRs Retry (#{result.num_rows} - #{inspect result.rows})"
-      end
+
+      Logger.debug(fn ->
+        "PG CDRs Retry (#{result.num_rows} - #{inspect(result.rows)})"
+      end)
     end
+
     #
     # update CDR ID disabled / to implement it we need to use returning: true
     # and use the callid to know which Sqlite CDR to update
@@ -148,8 +152,8 @@ defmodule PusherPG do
   def terminate(_reason, _state) do
     # Do Shutdown Stuff
     # IO.puts "Going Down: #{inspect(state)}"
-    Process.sleep(1000) #:timer.sleep(1000)
+    # :timer.sleep(1000)
+    Process.sleep(1000)
     :normal
   end
-
 end

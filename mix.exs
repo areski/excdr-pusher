@@ -2,14 +2,15 @@ defmodule ExCdrPusher.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :excdr_pusher,
-     version: "0.8.0",
-     elixir: "~> 1.6.4",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(),
-     description: description(),
-     package: package(),
+    [
+      app: :excdr_pusher,
+      version: "0.8.0",
+      elixir: "~> 1.6.4",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      description: description(),
+      package: package()
     ]
   end
 
@@ -17,8 +18,7 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [mod: {ExCdrPusher, []},
-     extra_applications: [:logger]]
+    [mod: {ExCdrPusher, []}, extra_applications: [:logger]]
   end
 
   # Dependencies

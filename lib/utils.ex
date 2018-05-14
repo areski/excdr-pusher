@@ -17,6 +17,7 @@ defmodule ExCdrPusher.Utils do
   def convert_int(nil, default), do: default
   def convert_int("", default), do: default
   def convert_int(value, _) when is_integer(value), do: value
+
   def convert_int(value, default) do
     case Integer.parse(value) do
       :error -> default
@@ -41,6 +42,7 @@ defmodule ExCdrPusher.Utils do
   def convert_float("", default), do: default
   def convert_float(value, _) when is_float(value), do: value
   def convert_float(value, _) when is_integer(value), do: value
+
   def convert_float(value, default) do
     case Float.parse(value) do
       :error -> default
@@ -64,11 +66,14 @@ defmodule ExCdrPusher.Utils do
   def calculate_billdur(billsec, increment) do
     billsec = convert_int(billsec, 0)
     increment = convert_int(increment, 0)
+
     cond do
       increment <= 0 or billsec <= 0 ->
         billsec
+
       billsec < increment ->
         increment
+
       true ->
         round(Float.ceil(billsec / increment) * increment)
     end
@@ -92,17 +97,21 @@ defmodule ExCdrPusher.Utils do
   """
   def sanitize_hangup_cause(hangup_cause_q850, billsec, hangup_cause) do
     # If billsec is position then we should have a normal call -> 16
-    hangup_cause_q850 = if billsec > 0 do
-      16
-    else
-      convert_int(hangup_cause_q850, 0)
-    end
+    hangup_cause_q850 =
+      if billsec > 0 do
+        16
+      else
+        convert_int(hangup_cause_q850, 0)
+      end
+
     # Fix Callcenter
     case hangup_cause do
       'LOSE_RACE' ->
         502
+
       'ORIGINATOR_CANCEL' ->
         487
+
       _ ->
         hangup_cause_q850
     end
@@ -127,15 +136,18 @@ defmodule ExCdrPusher.Utils do
     case amd_status do
       "HUMAN" ->
         1
+
       "PERSON" ->
         1
+
       "MACHINE" ->
         2
+
       "UNSURE" ->
         3
+
       _ ->
         0
     end
   end
-
 end

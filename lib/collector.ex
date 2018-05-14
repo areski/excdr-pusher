@@ -18,44 +18,59 @@ defmodule Collector do
 
   def init(state) do
     log_version()
-    Logger.info "[init] start collecting CDRs from " <>
-      Application.fetch_env!(:excdr_pusher, :sqlite_db)
+
+    Logger.info(
+      "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+    )
+
     # Removed as we do it during the installation...
     # HSqlite.sqlite_create_fields()
-    Process.send_after(self(), :timeout_tick, @tick_freq) # 0.1 sec
-    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    # 0.1 sec
+    Process.send_after(self(), :timeout_tick, @tick_freq)
+    # 1 sec
+    Process.send_after(self(), :timeout_1sec, 1 * 1000)
     {:ok, state}
   end
 
   def log_version do
     {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
     app_version = List.to_string(vsn)
-    {_, _, ex_ver} = List.keyfind(:application.which_applications, :elixir, 0)
+    {_, _, ex_ver} = List.keyfind(:application.which_applications(), :elixir, 0)
     erl_version = :erlang.system_info(:otp_release)
-    Logger.error "[starting] excdr_pusher (app_version:#{app_version} - "
-      <> "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
-    Logger.error "[config] tick_freq:#{@tick_freq}"
+
+    Logger.error(
+      "[starting] excdr_pusher (app_version:#{app_version} - " <>
+        "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
+    )
+
+    Logger.error("[config] tick_freq:#{@tick_freq}")
   end
 
   def handle_info(:timeout_tick, state) do
-    schedule_task() # Reschedule once more
+    # Reschedule once more
+    schedule_task()
     {:noreply, state}
   end
 
   def handle_info(:timeout_1sec, state) do
-    Logger.warn "(check alive) 1s heartbeat"
-    Process.send_after(self(), :timeout_1sec, 1 * 1000) # 1 sec
+    Logger.warn("(check alive) 1s heartbeat")
+    # 1 sec
+    Process.send_after(self(), :timeout_1sec, 1 * 1000)
     {:noreply, state}
   end
 
   defp schedule_task do
-    Process.send_after(self(), :timeout_tick, @tick_freq) # 0.1 sec
+    # 0.1 sec
+    Process.send_after(self(), :timeout_tick, @tick_freq)
+
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()
     else
-      Logger.error "Sqlite database not found: "
-        <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+      Logger.error(
+        "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
+      )
     end
+
     # current_date = :os.timestamp |> :calendar.now_to_datetime
     # Logger.debug "#{inspect current_date}"
   end
@@ -107,5 +122,4 @@ defmodule Collector do
   # def update_cdr_error(rowid) do
   #   GenServer.cast(__MODULE__, {:pg_cdr_error, rowid})
   # end
-
 end

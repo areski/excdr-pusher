@@ -6,12 +6,12 @@ defmodule CDRDurationSeries do
   """
 
   series do
-    database    Application.fetch_env!(:excdr_pusher, :influxdatabase)
-    measurement "cdr_duration"
+    database(Application.fetch_env!(:excdr_pusher, :influxdatabase))
+    measurement("cdr_duration")
 
-    tag :campaign_id, default: 0
+    tag(:campaign_id, default: 0)
 
-    field :value, default: 0
+    field(:value, default: 0)
   end
 end
 
@@ -23,12 +23,12 @@ defmodule CDRBilledDurationSeries do
   """
 
   series do
-    database    Application.fetch_env!(:excdr_pusher, :influxdatabase)
-    measurement "cdr_billedduration"
+    database(Application.fetch_env!(:excdr_pusher, :influxdatabase))
+    measurement("cdr_billedduration")
 
-    tag :campaign_id, default: 0
+    tag(:campaign_id, default: 0)
 
-    field :value, default: 0
+    field(:value, default: 0)
   end
 end
 
@@ -40,12 +40,12 @@ defmodule CDRCallCostSeries do
   """
 
   series do
-    database    Application.fetch_env!(:excdr_pusher, :influxdatabase)
-    measurement "cdr_callcost"
+    database(Application.fetch_env!(:excdr_pusher, :influxdatabase))
+    measurement("cdr_callcost")
 
-    tag :campaign_id, default: 0
+    tag(:campaign_id, default: 0)
 
-    field :value, default: 0
+    field(:value, default: 0)
   end
 end
 
@@ -57,12 +57,12 @@ defmodule CDRHangupCauseSeries do
   """
 
   series do
-    database    Application.fetch_env!(:excdr_pusher, :influxdatabase)
-    measurement "cdr_hangup_cause"
+    database(Application.fetch_env!(:excdr_pusher, :influxdatabase))
+    measurement("cdr_hangup_cause")
 
-    tag :campaign_id, default: 0
+    tag(:campaign_id, default: 0)
 
-    field :value, default: 0
+    field(:value, default: 0)
   end
 end
 
@@ -74,11 +74,11 @@ defmodule CDRHangupCauseQ850Series do
   """
 
   series do
-    database    Application.fetch_env!(:excdr_pusher, :influxdatabase)
-    measurement "cdr_hangup_cause_q850"
+    database(Application.fetch_env!(:excdr_pusher, :influxdatabase))
+    measurement("cdr_hangup_cause_q850")
 
-    tag :campaign_id, default: 0
+    tag(:campaign_id, default: 0)
 
-    field :value, default: 0
+    field(:value, default: 0)
   end
 end

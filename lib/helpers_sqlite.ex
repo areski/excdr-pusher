@@ -1,5 +1,4 @@
 defmodule ExCdrPusher.HSqlite do
-
   require Logger
   alias Application, as: App
 
@@ -10,14 +9,12 @@ defmodule ExCdrPusher.HSqlite do
   def fetch_cdr do
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
-        fetchsql =
-          "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
+        fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
         # IO.puts "fetchsql:" <> fetchsql
-        Sqlitex.query(db,
-                      fetchsql,
-                      bind: [App.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
+        Sqlitex.query(db, fetchsql, bind: [App.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
+
       {:error, reason} ->
-        Logger.error reason
+        Logger.error(reason)
         {:error}
     end
   end
@@ -39,46 +36,54 @@ defmodule ExCdrPusher.HSqlite do
 
   # Mark those CDRs as imported to not fetch them twice
   def mark_cdr_imported(cdrs) do
-    Logger.debug fn ->
+    Logger.debug(fn ->
       "Mark CDRs: #{length(cdrs)}"
-    end
-    ids = Enum.map(cdrs, fn(x) -> x[:rowid] end)
-    questmarks = ids |> Enum.map(fn(_) -> "?" end) |> Enum.join(", ")
+    end)
+
+    ids = Enum.map(cdrs, fn x -> x[:rowid] end)
+    questmarks = ids |> Enum.map(fn _ -> "?" end) |> Enum.join(", ")
     sql = "UPDATE cdr SET imported=1 WHERE imported=0 AND OID IN (" <> questmarks <> ")"
     # IO.puts sql
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: ids)
+
       {:error, reason} ->
-        Logger.error reason
+        Logger.error(reason)
         {:error}
     end
   end
 
   def update_sqlite_cdr_ok(rowid, pg_cdr_id) do
-    Logger.debug fn ->
+    Logger.debug(fn ->
       "CDR imported rowid:#{rowid} - pg_cdr_id:#{pg_cdr_id}"
-    end
+    end)
+
     sql = "UPDATE cdr SET imported=1, pg_cdr_id=? WHERE OID=?"
+
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: [pg_cdr_id, rowid])
+
       {:error, reason} ->
-        Logger.error reason
+        Logger.error(reason)
         {:error}
     end
   end
 
   def update_sqlite_cdr_error(rowid) do
-    Logger.debug fn ->
+    Logger.debug(fn ->
       "CDR not imported rowid:#{rowid}"
-    end
+    end)
+
     sql = "UPDATE cdr SET imported=0 WHERE OID=?"
+
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: rowid)
+
       {:error, reason} ->
-        Logger.error reason
+        Logger.error(reason)
         {:error}
     end
   end
@@ -87,8 +92,7 @@ defmodule ExCdrPusher.HSqlite do
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         {:ok, count} = Sqlitex.query(db, "SELECT count(*) FROM cdr WHERE imported=0;")
-        IO.puts "CDRs remaining: #{inspect count}"
+        IO.puts("CDRs remaining: #{inspect(count)}")
     end
   end
-
 end

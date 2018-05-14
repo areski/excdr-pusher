@@ -20,29 +20,31 @@ defmodule PushInfluxDB do
   def insert_cdr(cdr_list) do
     series = Enum.map(cdr_list, &build_series/1)
     # IO.inspect series
-    res = series |> InfluxCon.write([async: true, precision: :nanoseconds])
+    res = series |> InfluxCon.write(async: true, precision: :nanoseconds)
+
     case res do
       :ok ->
-        series_ct = series |> Enum.count
-        Logger.info "wrote #{series_ct} points"
+        series_ct = series |> Enum.count()
+        Logger.info("wrote #{series_ct} points")
+
       {:error, :econnrefused} ->
-        Logger.error "error writing points"
-      _  ->
-        Logger.error "error writing points: #{inspect series}"
+        Logger.error("error writing points")
+
+      _ ->
+        Logger.error("error writing points: #{inspect(series)}")
     end
 
     {:ok}
   end
 
   # From Erlang 18:
-  def convert_start_uepoch_nano(""), do:
-    :os.system_time(:milli_seconds) * 1_000_000
+  def convert_start_uepoch_nano(""), do: :os.system_time(:milli_seconds) * 1_000_000
   # From Erlang 19.1:
   # def convert_start_uepoch_nano(""), do:
   #   :os.system_time(:millisecond) * 1_000_000
 
   def convert_start_uepoch_nano(value) do
-    :rand.seed(:exs1024, :os.timestamp)
+    :rand.seed(:exs1024, :os.timestamp())
     # add random 3 digits for precision
     [extranum] = Enum.take_random(100..999, 1)
     value * 1000 + extranum
@@ -50,7 +52,7 @@ defmodule PushInfluxDB do
 
   def build_series(data) do
     ntime = convert_start_uepoch_nano(data[:start_uepoch])
-    Logger.info "ntime: #{ntime}"
+    Logger.info("ntime: #{ntime}")
 
     serie = %CDRDurationSeries{}
     serie = %{serie | timestamp: ntime}
@@ -61,7 +63,6 @@ defmodule PushInfluxDB do
     # Build all series and return them all:
     # CDRBilledDurationSeries, CDRCallCostSeries, CDRHangupCauseSeries,
     # CDRHangupCauseQ850Series
-
   end
 
   # Async push CDRs
@@ -74,5 +75,4 @@ defmodule PushInfluxDB do
     {:ok} = insert_cdr(cdr)
     {:noreply, state}
   end
-
 end

@@ -4,5 +4,4 @@ defmodule ExCdrPusher.InConnection do
   @moduledoc """
   InfluxDB connection
   """
-
 end

@@ -1,5 +1,4 @@
 defmodule ExCdrPusher.Sanitizer do
-
   alias ExCdrPusher.Utils
   alias Timex.Timezone, as: Timezone
 
@@ -15,8 +14,7 @@ defmodule ExCdrPusher.Sanitizer do
   """
   def cdr(cdr) do
     # get billed_duration
-    billed_duration = Utils.calculate_billdur(cdr[:billsec],
-                                              cdr[:nibble_increment])
+    billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
 
     # get cdr date
     # IO.inspect cdr[:start_stamp]
@@ -45,9 +43,8 @@ defmodule ExCdrPusher.Sanitizer do
     nibble_total_billed = Utils.convert_float(cdr[:nibble_total_billed], 0.0)
 
     # Get hangup_cause_q850, on transfer hc_q850 needs to be corrected, Fix for callcenter
-    hc_q850 = Utils.sanitize_hangup_cause(cdr[:hangup_cause_q850],
-                                          cdr[:billsec],
-                                          cdr[:hangup_cause])
+    hc_q850 =
+      Utils.sanitize_hangup_cause(cdr[:hangup_cause_q850], cdr[:billsec], cdr[:hangup_cause])
 
     # get user_id
     user_id = clean_id(cdr[:user_id])
@@ -63,7 +60,7 @@ defmodule ExCdrPusher.Sanitizer do
       nibble_total_billed: nibble_total_billed,
       hangup_cause_q850: hc_q850,
       user_id: user_id,
-      campaign_id: campaign_id,
+      campaign_id: campaign_id
     }
   end
 
@@ -79,5 +76,4 @@ defmodule ExCdrPusher.Sanitizer do
   """
   def clean_id(""), do: 1
   def clean_id(value), do: value
-
 end
