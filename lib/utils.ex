@@ -99,9 +99,9 @@ defmodule ExCdrPusher.Utils do
     end
     # Fix Callcenter
     case hangup_cause do
-      "LOSE_RACE" ->
+      'LOSE_RACE' ->
         502
-      "ORIGINATOR_CANCEL" ->
+      'ORIGINATOR_CANCEL' ->
         487
       _ ->
         hangup_cause_q850

@@ -44,10 +44,10 @@ defmodule ExCdrPusher.Sanitizer do
     # get nibble_total_billed
     nibble_total_billed = Utils.convert_float(cdr[:nibble_total_billed], 0.0)
 
-    #
     # Get hangup_cause_q850, on transfer hc_q850 needs to be corrected, Fix for callcenter
-    hc_q850 = Utils.sanitize_hangup_cause(cdr[:hangup_cause_q850], cdr[:billsec], cdr[:hangup_cause])
-
+    hc_q850 = Utils.sanitize_hangup_cause(cdr[:hangup_cause_q850],
+                                          cdr[:billsec],
+                                          cdr[:hangup_cause])
 
     # get user_id
     user_id = clean_id(cdr[:user_id])

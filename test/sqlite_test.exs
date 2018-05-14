@@ -3,7 +3,6 @@ defmodule SqliteCDRTest do
 
   alias ExCdrPusher.HSqlite
 
-
   setup_all do
     # Test Database must use import_sqlite.sql to define his schema and data
     {:ok, db} = Sqlitex.open('./data/freeswitchcdr-test.db')

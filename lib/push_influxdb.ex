@@ -16,7 +16,6 @@ defmodule PushInfluxDB do
     {:ok, args}
   end
 
-
   # Insert CDR in batch
   def insert_cdr(cdr_list) do
     series = Enum.map(cdr_list, &build_series/1)
