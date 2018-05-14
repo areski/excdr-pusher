@@ -28,17 +28,17 @@ defmodule ExCdrPusher.Mixfile do
       {:distillery, "~> 1.5.2"},
       # {:sqlitex, path: "../sqlitex"},
       {:sqlitex, "~> 1.3.3"},
-      {:ecto, "~> 2.2.9"},
+      {:ecto, "~> 2.2.10"},
       {:postgrex, ">= 0.0.0"},
       {:logger_file_backend, "0.0.10"},
       {:instream, "~> 0.17.1"},
       {:swab, github: "crownedgrouse/swab", branch: "master"},
-      {:timex, "~> 3.2.1"},
-      {:timex_ecto, "~> 3.2.1"},
+      {:timex, "~> 3.3.0"},
+      {:timex_ecto, "~> 3.3.0"},
       {:tzdata, "~> 0.5.16"},
       # used test and code style,
       {:mix_test_watch, "~> 0.6.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 0.9.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.9.2", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
