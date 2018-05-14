@@ -46,7 +46,7 @@ defmodule SqliteCDRTest do
 
     HSqlite.mark_cdr_imported(cdr_list)
     {:ok, cdr_list} = HSqlite.fetch_cdr()
-    assert length(cdr_list) == 0
+    assert cdr_list == []
   end
 
   test "get timestamp", context do
