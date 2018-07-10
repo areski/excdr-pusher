@@ -21,8 +21,9 @@ erl_crash.dump
 
 #custom
 config/private.exs%
-release-me.sh
+release-*.sh
+elixir-releases
+releases
 
 #private
 /private
-elixir-releases
