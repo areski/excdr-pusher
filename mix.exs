@@ -25,9 +25,9 @@ defmodule ExCdrPusher.Mixfile do
   defp deps do
     [
       {:ex_doc, "~> 0.18.3", only: :dev},
-      {:distillery, "~> 1.5.2"},
+      {:distillery, "~> 1.5.3"},
       # {:sqlitex, path: "../sqlitex"},
-      {:sqlitex, "~> 1.3.3"},
+      {:sqlitex, "~> 1.4.2"},
       {:ecto, "~> 2.2.10"},
       {:postgrex, ">= 0.0.0"},
       {:logger_file_backend, "0.0.10"},
@@ -35,10 +35,10 @@ defmodule ExCdrPusher.Mixfile do
       {:swab, github: "crownedgrouse/swab", branch: "master"},
       {:timex, "~> 3.3.0"},
       {:timex_ecto, "~> 3.3.0"},
-      {:tzdata, "~> 0.5.16"},
+      {:tzdata, "~> 0.5.17"},
       # used test and code style,
       {:mix_test_watch, "~> 0.6.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 0.9.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.9.3", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
