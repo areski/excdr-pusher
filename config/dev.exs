@@ -40,7 +40,7 @@ config :excdr_pusher, ExCdrPusher.Repo,
 
 # InfluxDB configuration
 config :excdr_pusher, ExCdrPusher.InConnection,
-  host:      "influxdb_host",
+  host:      "influxdb-host",
   # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
   pool:      [ max_overflow: 0, size: 1 ],
   port:      8086,

@@ -34,7 +34,7 @@ Create directory for logs:
 
 Add host in your `/etc/hosts` eg:
 
-    127.0.0.1     influxdb_host
+    127.0.0.1     influxdb-host
 
 ## Compile & Build Release
 
