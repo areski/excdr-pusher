@@ -94,14 +94,23 @@ defmodule ExCdrPusher.Utils do
     502
     iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'ORIGINATOR_CANCEL')
     487
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'NORMAL_CLEARING')
+    21
   """
   def sanitize_hangup_cause(hangup_cause_q850, billsec, hangup_cause) do
     # If billsec is position then we should have a normal call -> 16
     hangup_cause_q850 =
-      if billsec > 0 do
-        16
-      else
-        convert_int(hangup_cause_q850, 0)
+      cond do
+        billsec > 0 ->
+          16
+
+        billsec == 0 and hangup_cause == 'NORMAL_CLEARING' ->
+          # We will mark those calls as rejected
+          21
+
+        true ->
+          convert_int(hangup_cause_q850, 0)
+
       end
 
     # Fix Callcenter
