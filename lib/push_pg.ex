@@ -2,8 +2,8 @@ defmodule PusherPG do
   use GenServer
   require Logger
 
-  alias ExCdrPusher.Repo
   alias ExCdrPusher.CDR
+  alias ExCdrPusher.Repo
   alias ExCdrPusher.Sanitizer
 
   @moduledoc """
