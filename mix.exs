@@ -25,9 +25,9 @@ defmodule ExCdrPusher.Mixfile do
   defp deps do
     [
       {:ex_doc, "~> 0.19.1", only: :dev},
-      {:distillery, "~> 2.0.10"},
+      {:distillery, "~> 2.0.12"},
       # {:sqlitex, path: "../sqlitex"},
-      {:sqlitex, "~> 1.4.2"},
+      {:sqlitex, "~> 1.5.0"},
       {:ecto, "~> 2.2.10"},
       {:postgrex, ">= 0.0.0"},
       {:logger_file_backend, "0.0.10"},
