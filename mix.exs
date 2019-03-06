@@ -5,7 +5,7 @@ defmodule ExCdrPusher.Mixfile do
     [
       app: :excdr_pusher,
       version: "0.11.0",
-      elixir: "~> 1.7.3",
+      elixir: "~> 1.8.1",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,24 +24,24 @@ defmodule ExCdrPusher.Mixfile do
   # Dependencies
   defp deps do
     [
-      {:ex_doc, "~> 0.19.1", only: :dev},
+      {:ex_doc, "~> 0.19.3", only: :dev},
       {:distillery, "~> 2.0.12"},
-      # {:sqlitex, path: "../sqlitex"},
-      {:sqlitex, "~> 1.5.0"},
-      # {:esqlite, "0.2.4"},
+      {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
+      # {:sqlitex, "~> 1.5.0"},
+      {:esqlite, "0.3.0"},
       # {:esqlite, git: "https://github.com/mmzeeman/esqlite.git", ref: "c1a0d60574539cda1f3310826945485f1d202d9c"},
-      {:esqlite, path: "/home/areski/projects/elixir/esqlite", override: true},
+      # {:esqlite, path: "/home/areski/projects/elixir/esqlite", override: true},
       {:ecto, "~> 2.2.10"},
       {:postgrex, ">= 0.0.0"},
       {:logger_file_backend, "0.0.10"},
-      {:instream, "~> 0.18.0"},
+      {:instream, "~> 0.19.0"},
       {:swab, github: "crownedgrouse/swab", branch: "master"},
-      {:timex, "~> 3.4.2"},
+      {:timex, "~> 3.5.0"},
       {:timex_ecto, "~> 3.3.0"},
       {:tzdata, "~> 0.5.19"},
       # used test and code style,
       {:mix_test_watch, "~> 0.9.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.0.2", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
