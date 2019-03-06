@@ -33,8 +33,9 @@ config :excdr_pusher,
   # 10 -> 250 CDRs per second (it's enough for one server)
 
 # Push to
+config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
+
 config :excdr_pusher, ExCdrPusher.Repo,
-  adapter: Ecto.Adapters.Postgres,
   url: "postgres://postgres:password@localhost/newfiesdb",
   pool_size: 10
 

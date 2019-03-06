@@ -34,10 +34,12 @@ config :excdr_pusher,
   # 20 -> 500 CDRs per second -> 30.000 per minute
 
 # Push to
+config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
+
 config :excdr_pusher, ExCdrPusher.Repo,
-  adapter: Ecto.Adapters.Postgres,
   url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME",
   pool_size: 10
+
 
 # InfluxDB configuration
 config :excdr_pusher, ExCdrPusher.InConnection,

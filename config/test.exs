@@ -31,10 +31,11 @@ config :excdr_pusher,
   # Amount of CDRs to fetch every 0.1 second
   amount_cdr_fetch: 1
 
-# Push to
+  # Push to
+config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
+
 config :excdr_pusher, ExCdrPusher.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  url: "postgres://postgres:password@localhost/newfiesdb",
+url: "postgres://postgres:password@localhost/newfiesdb",
   pool_size: 10,
   pool: Ecto.Adapters.SQL.Sandbox
 

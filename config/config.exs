@@ -66,9 +66,11 @@ config :excdr_pusher,
   amount_cdr_fetch: 50
 
 # Push to
+config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
+
 config :excdr_pusher, ExCdrPusher.Repo,
-  adapter: Ecto.Adapters.Postgres,
   url: "postgres://postgres:password@localhost/newfiesdb"
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
