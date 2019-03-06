@@ -1,10 +1,10 @@
-FROM jessie_elixir174
+FROM jessie_elixir181
 # replaced by custom image using Jessie
-# FROM elixir:1.7.4
+# FROM elixir:1.8.1
 
 MAINTAINER Areski <areski@gmail.com>
 
-ENV REFRESHED_AT 2018-09-08
+ENV REFRESHED_AT 2019-03-06
 
 # Install hex
 RUN /usr/local/bin/mix local.hex --force && \
