@@ -26,6 +26,7 @@ defmodule ExCdrPusher.Mixfile do
     [
       {:ex_doc, "~> 0.19.3", only: :dev},
       {:distillery, "~> 2.0.12"},
+      {:memoize, "~> 1.3.0"},
       {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
       # {:sqlitex, "~> 1.5.0"},
       {:esqlite, "0.3.0"},

@@ -1,3 +1,33 @@
+defmodule ExCdrPusher.SchemaUserProfile do
+  use Ecto.Schema
+
+  @moduledoc """
+  Ecto Campaign RT table definition
+  """
+  schema "user_profile" do
+    field(:accountcode, :integer)
+    field(:dialersetting_id, :integer)
+    field(:user_id, :integer)
+    field(:balance, :decimal)
+    field(:call_rate, :decimal)
+    field(:billing_increment, :integer)
+    field(:billing_min_charge, :decimal)
+    field(:bleg_call_rate, :decimal)
+    field(:bleg_billing_increment, :integer)
+    field(:bleg_billing_min_charge, :decimal)
+    field(:max_cc, :integer)
+    field(:daily_start_time, :time)
+    field(:daily_stop_time, :time)
+    # field :max_cps,            :integer
+  end
+end
+
+# alias ExCdrPusher.Repo
+# alias ExCdrPusher.SchemaUserProfile
+#
+# cp = Repo.get(SchemaUserProfile, 137)
+#
+
 defmodule ExCdrPusher.CDR do
   use Ecto.Schema
 
