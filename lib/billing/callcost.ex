@@ -1,4 +1,4 @@
-defmodule ExCdrPusher.Billing do
+defmodule ExCdrPusher.CallCost do
   alias Decimal, as: D
   alias ExCdrPusher.DataUser
   alias ExCdrPusher.Utils
@@ -39,15 +39,10 @@ defmodule ExCdrPusher.Billing do
   Calculate call cost using billsec & billing info
 
   ## Example
-
-    iex> ExCdrPusher.Billing.calculate_call_cost(1, 1, 12)
-    #Decimal<0.12399>
-
-    iex> ExCdrPusher.Billing.calculate_call_cost(1, 1, 120)
-    #Decimal<0.20000>
-
-    iex> ExCdrPusher.Billing.calculate_call_cost(0, 1, 120)
-    #Decimal<0.20000>
+    iex> ExCdrPusher.CallCost.calculate_call_cost(1, 1, 12)
+    0.12399
+    iex> ExCdrPusher.CallCost.calculate_call_cost(1, 1, 120)
+    0.20000
   """
   def calculate_call_cost(user_id, leg_type, billsec) do
     # Configure a precision
@@ -68,7 +63,7 @@ defmodule ExCdrPusher.Billing do
     call_cost = D.mult(D.div(billed_duration, D.from_float(60.0)), D.new(billing_info["rate"]))
 
     call_cost = if Decimal.cmp(call_cost, D.new(billing_info["min_charge"])) == :lt do
-        D.new(billing_info["min_charge"]) |> D.to_float
+      billing_info["min_charge"] |> D.new |> D.to_float
       else
         call_cost |> D.to_float
       end

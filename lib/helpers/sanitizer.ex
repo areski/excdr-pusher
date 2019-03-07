@@ -74,6 +74,6 @@ defmodule ExCdrPusher.Sanitizer do
     iex> ExCdrPusher.Sanitizer.clean_id(1234)
     1234
   """
-  def clean_id(""), do: 1
+  def clean_id(""), do: 0
   def clean_id(value), do: value
 end

@@ -1,9 +1,9 @@
-defmodule BillingTest do
+defmodule CallCostTest do
   use ExUnit.Case, async: true
-  doctest ExCdrPusher.Billing
+  doctest ExCdrPusher.CallCost
 
   alias Ecto.Adapters.SQL.Sandbox
-  alias ExCdrPusher.Billing
+  alias ExCdrPusher.CallCost
   alias ExCdrPusher.DataUser
 
   @user_id 1
@@ -16,7 +16,7 @@ defmodule BillingTest do
   test "test get_billing_info_per_leg" do
     u = DataUser.get_userprofile(@user_id)
     leg_type = 1
-    billing_info = Billing.get_billing_info_per_leg(u, leg_type)
+    billing_info = CallCost.get_billing_info_per_leg(u, leg_type)
     assert billing_info == %{
       "increment" => 6,
       "min_charge" => Decimal.new("0.12399"),

@@ -16,6 +16,7 @@ defmodule ExCdrPusher.DataUser do
 
   >> ExCdrPusher.DataUser.get_userprofile(170)
   """
+  def get_userprofile(nil), do: false
   def get_userprofile(user_id) do
     query =
       from(
@@ -39,19 +40,6 @@ defmodule ExCdrPusher.DataUser do
 
   # Cached function get_userprofile
   defmemo c__get_userprofile(user_id), expires_in: 1 * 10_000 do
-    query =
-      from(
-        up in SchemaUserProfile,
-        where: up.user_id == ^user_id,
-        select: up
-      )
-
-    case Repo.all(query) do
-      [result] ->
-        result
-
-      [] ->
-        false
-    end
+    get_userprofile(user_id)
   end
 end

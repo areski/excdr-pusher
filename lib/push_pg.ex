@@ -2,7 +2,8 @@ defmodule PusherPG do
   use GenServer
   require Logger
 
-  alias ExCdrPusher.Billing
+  alias Ecto.Adapters.SQL
+  alias ExCdrPusher.CallCost
   alias ExCdrPusher.CDR
   alias ExCdrPusher.Repo
   alias ExCdrPusher.Sanitizer
@@ -26,7 +27,11 @@ defmodule PusherPG do
     # Sanitize CDR
     clean_cdr = Sanitizer.cdr(cdr)
 
-    call_cost = Billing.calculate_call_cost(clean_cdr[:user_id], clean_cdr[:legtype], cdr[:billsec])
+    call_cost = CallCost.calculate_call_cost(
+      clean_cdr[:user_id],
+      clean_cdr[:legtype],
+      cdr[:billsec]
+    )
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields
     # so we use clean_cdr[:field_name_xy] everywhere
@@ -92,7 +97,7 @@ defmodule PusherPG do
 
       sql_retry = build_sql_select_retry(cdr_list)
       # Run SQL
-      result = Ecto.Adapters.SQL.query!(Repo, sql_retry)
+      result = SQL.query!(Repo, sql_retry)
 
       Logger.debug(fn ->
         "PG CDRs Retry (#{result.num_rows} - #{inspect(result.rows)})"
