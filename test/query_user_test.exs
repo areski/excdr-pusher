@@ -1,12 +1,13 @@
 defmodule DataQueryUserTest do
   use ExUnit.Case, async: true
+  alias Ecto.Adapters.SQL.Sandbox
   alias ExCdrPusher.DataUser
 
   @user_id 1
 
   setup do
     # Explicitly get a connection before each test
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ExCdrPusher.Repo)
+    :ok = Sandbox.checkout(ExCdrPusher.Repo)
   end
 
   test "test get_userprofile" do

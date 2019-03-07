@@ -28,6 +28,7 @@ defmodule ExCdrPusher.Mixfile do
       {:distillery, "~> 2.0.12"},
       {:memoize, "~> 1.3.0"},
       {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
+      {:decimal, "~> 1.7"},
       # {:sqlitex, "~> 1.5.0"},
       {:esqlite, "0.3.0"},
       # {:esqlite, git: "https://github.com/mmzeeman/esqlite.git", ref: "c1a0d60574539cda1f3310826945485f1d202d9c"},

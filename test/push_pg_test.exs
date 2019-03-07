@@ -1,5 +1,8 @@
 defmodule PusherPGTest do
   use ExUnit.Case, async: true
+  alias Ecto.Adapters.SQL
+  alias Ecto.Adapters.SQL.Sandbox
+  alias Timex.Timezone
   doctest PusherPG
 
   # setup do
@@ -9,7 +12,7 @@ defmodule PusherPGTest do
 
   setup do
     # Explicitly get a connection before each test
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ExCdrPusher.Repo)
+    :ok = Sandbox.checkout(ExCdrPusher.Repo)
   end
 
   # test "spawns buckets", %{genserver: genserver} do
@@ -42,7 +45,7 @@ defmodule PusherPGTest do
     ]
 
     dt = Timex.to_datetime({{2016, 9, 20}, {10, 14, 37, 0}}, :local)
-    starting_date = Timex.Timezone.convert(dt, "UTC")
+    starting_date = Timezone.convert(dt, "UTC")
 
     assert PusherPG.build_cdr_map(cdr) == %{
              amd_status: 2,
@@ -298,7 +301,7 @@ defmodule PusherPGTest do
   end
 
   test "raw query" do
-    result = Ecto.Adapters.SQL.query!(ExCdrPusher.Repo, "SELECT NOW()")
+    result = SQL.query!(ExCdrPusher.Repo, "SELECT NOW()")
     assert result.num_rows == 1
   end
 end

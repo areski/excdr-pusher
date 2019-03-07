@@ -2,6 +2,7 @@ defmodule PusherPG do
   use GenServer
   require Logger
 
+  alias ExCdrPusher.Billing
   alias ExCdrPusher.CDR
   alias ExCdrPusher.Repo
   alias ExCdrPusher.Sanitizer
@@ -24,6 +25,8 @@ defmodule PusherPG do
   def build_cdr_map(cdr) do
     # Sanitize CDR
     clean_cdr = Sanitizer.cdr(cdr)
+
+    call_cost = Billing.calculate_call_cost(clean_cdr[:user_id], clean_cdr[:legtype], cdr[:billsec])
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields
     # so we use clean_cdr[:field_name_xy] everywhere
@@ -43,7 +46,7 @@ defmodule PusherPG do
       hangup_cause_q850: clean_cdr[:hangup_cause_q850],
       campaign_id: clean_cdr[:campaign_id],
       billed_duration: clean_cdr[:billed_duration],
-      call_cost: clean_cdr[:nibble_total_billed]
+      call_cost: call_cost
     }
   end
 
@@ -84,6 +87,8 @@ defmodule PusherPG do
 
     if nb_inserted > 0 do
       Logger.info("PG CDRs inserted (#{nb_inserted})")
+
+      # apply_bill_cdrs
 
       sql_retry = build_sql_select_retry(cdr_list)
       # Run SQL
