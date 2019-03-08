@@ -54,12 +54,13 @@ defmodule ExCdrPusher.Sanitizer do
 
     %{
       billed_duration: billed_duration,
+      billsec: cdr[:billsec],
+      user_id: user_id,
       cdrdate: cdrdate,
       legtype: legtype,
       amd_status: amd_status,
       nibble_total_billed: nibble_total_billed,
       hangup_cause_q850: hc_q850,
-      user_id: user_id,
       campaign_id: campaign_id
     }
   end

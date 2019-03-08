@@ -16,7 +16,8 @@ defmodule ExCdrPusher do
       # worker(ExCdrPusher.Worker, [arg1, arg2, arg3]),
       supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
-      worker(PusherPG, [0])
+      worker(PusherPG, [0]),
+      worker(Biller, []),
       # worker(PushInfluxDB, [0]),
       # `Sqlitex.Server` is not used as it's not possible to catch errors on
       # reading / opening the database

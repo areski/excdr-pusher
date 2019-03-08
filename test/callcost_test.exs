@@ -24,6 +24,4 @@ defmodule CallCostTest do
     }
   end
 
-  # test "test "
-
 end

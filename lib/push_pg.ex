@@ -7,6 +7,7 @@ defmodule PusherPG do
   alias ExCdrPusher.CDR
   alias ExCdrPusher.Repo
   alias ExCdrPusher.Sanitizer
+  alias Application, as: App
 
   @moduledoc """
   This is the GenServer to push CDRs to PostgreSQL...
@@ -21,36 +22,52 @@ defmodule PusherPG do
   end
 
   @doc """
+  bill or not to bill the CDR
+  """
+  def bill_cdr(sanitized_cdr) do
+    if App.fetch_env!(:excdr_pusher, :enable_billing) do
+      # Billing enabled
+      call_cost = CallCost.calculate_call_cost(
+        sanitized_cdr[:user_id],
+        sanitized_cdr[:legtype],
+        sanitized_cdr[:billsec]
+      )
+      # Add Billing for that user
+      Biller.add_userid(sanitized_cdr[:user_id], call_cost)
+      call_cost
+    else
+      0.0
+    end
+  end
+
+  @doc """
   Build CDR Map
   """
   def build_cdr_map(cdr) do
     # Sanitize CDR
-    clean_cdr = Sanitizer.cdr(cdr)
+    sanitized_cdr = Sanitizer.cdr(cdr)
+    # Found cost and bill CDR
+    call_cost = bill_cdr(sanitized_cdr)
 
-    call_cost = CallCost.calculate_call_cost(
-      clean_cdr[:user_id],
-      clean_cdr[:legtype],
-      cdr[:billsec]
-    )
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields
-    # so we use clean_cdr[:field_name_xy] everywhere
+    # so we use sanitized_cdr[:field_name_xy] everywhere
     %{
       callid: cdr[:uuid],
       callerid: cdr[:caller_id_number],
       phone_number: cdr[:destination_number],
-      starting_date: clean_cdr[:cdrdate],
+      starting_date: sanitized_cdr[:cdrdate],
       duration: cdr[:duration],
       billsec: cdr[:billsec],
-      leg_type: clean_cdr[:legtype],
-      amd_status: clean_cdr[:amd_status],
+      leg_type: sanitized_cdr[:legtype],
+      amd_status: sanitized_cdr[:amd_status],
       callrequest_id: cdr[:callrequest_id],
       # used_gateway_id: cdr[:used_gateway_id],
-      # user_id: clean_cdr[:user_id],
+      # user_id: sanitized_cdr[:user_id],
       # hangup_cause: cdr[:hangup_cause],
-      hangup_cause_q850: clean_cdr[:hangup_cause_q850],
-      campaign_id: clean_cdr[:campaign_id],
-      billed_duration: clean_cdr[:billed_duration],
+      hangup_cause_q850: sanitized_cdr[:hangup_cause_q850],
+      campaign_id: sanitized_cdr[:campaign_id],
+      billed_duration: sanitized_cdr[:billed_duration],
       call_cost: call_cost
     }
   end
@@ -63,11 +80,11 @@ defmodule PusherPG do
     "process_cdr_retry(1681, 1, 1, 16, 2)"
   """
   def build_select_retry(cdr) do
-    clean_cdr = Sanitizer.cdr(cdr)
+    sanitized_cdr = Sanitizer.cdr(cdr)
 
-    if clean_cdr[:legtype] == 1 do
-      "process_cdr_retry(#{cdr[:callrequest_id]}, #{clean_cdr[:campaign_id]}, " <>
-        "#{clean_cdr[:legtype]}, #{clean_cdr[:hangup_cause_q850]}, #{clean_cdr[:amd_status]})"
+    if sanitized_cdr[:legtype] == 1 do
+      "process_cdr_retry(#{cdr[:callrequest_id]}, #{sanitized_cdr[:campaign_id]}, " <>
+        "#{sanitized_cdr[:legtype]}, #{sanitized_cdr[:hangup_cause_q850]}, #{sanitized_cdr[:amd_status]})"
     end
   end
 
@@ -92,8 +109,6 @@ defmodule PusherPG do
 
     if nb_inserted > 0 do
       Logger.info("PG CDRs inserted (#{nb_inserted})")
-
-      # apply_bill_cdrs
 
       sql_retry = build_sql_select_retry(cdr_list)
       # Run SQL

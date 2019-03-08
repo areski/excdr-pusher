@@ -38,6 +38,11 @@ defmodule ExCdrPusher.CallCost do
   @doc ~S"""
   Calculate call cost using billsec & billing info
 
+  # Example of billing
+  # formula for to avoid rounding ==> (billed_duration / 60) * rate_per_minute
+  # 10 secs = 0.1 cents per minute ==> (10sec / 60) * 0.1 = 0,01667$
+  # 25 secs = 0.2 cents per minute ==> (25sec / 60) * 0.2 = 0.083$
+
   ## Example
     iex> ExCdrPusher.CallCost.calculate_call_cost(1, 1, 12)
     0.12399
@@ -50,15 +55,7 @@ defmodule ExCdrPusher.CallCost do
 
     user = DataUser.c__get_userprofile(user_id)
     billing_info = get_billing_info_per_leg(user, leg_type)
-    # IO.puts("==> leg_type:#{leg_type} - billing_info: #{inspect(billing_info)}")
     billed_duration = Utils.calculate_billdur(billsec, billing_info["increment"])
-
-    # CALCULATE THE COST OF THE CALL
-
-    # Example of billing
-    # formula for to avoid rounding ==> (billed_duration / 60) * rate_per_minute
-    # 10 secs = 0.1 cents per minute ==> (10sec / 60) * 0.1 = 0,01667$
-    # 25 secs = 0.2 cents per minute ==> (25sec / 60) * 0.2 = 0.083$
 
     call_cost = D.mult(D.div(billed_duration, D.from_float(60.0)), D.new(billing_info["rate"]))
 
@@ -68,8 +65,7 @@ defmodule ExCdrPusher.CallCost do
         call_cost |> D.to_float
       end
 
-    # IO.puts("==> Calculation call_cost: #{inspect(call_cost)} - billed_duration: #{billed_duration}")
-    Logger.error("-> calculate_call_cost - user_id:#{user_id} - call_cost:#{call_cost}")
+    Logger.debug("-> calculate_call_cost - user_id:#{user_id} - call_cost:#{call_cost}")
     call_cost
   end
 

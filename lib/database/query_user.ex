@@ -36,6 +36,34 @@ defmodule ExCdrPusher.DataUser do
     end
   end
 
+  @doc """
+  Decrement Balance
+
+  >> ExCdrPusher.DataUser.decrement_balance(1, 0.51531)
+  """
+  def decrement_balance(user_id, cost) do
+    Logger.error("-> decrement_balance user_id:#{user_id} - cost:#{cost}")
+    SchemaUserProfile
+    |> Ecto.Query.where([p], p.user_id == ^user_id)
+    |> Repo.update_all(inc: [balance: -cost])
+
+    # Repo.get_by(SchemaUserProfile, user_id: 1)
+    # |> Ecto.Changeset.change(balance: balance)
+    # |> Repo.update()
+
+    # # Repo.update(change(alice, balance: alice.balance - 10))
+    # # userp = Repo.get!(SchemaUserProfile, user_id)
+    # userp = Repo.get_by!(SchemaUserProfile, user_id: user_id)
+    # user_change = Ecto.Changeset.change userp, balance: userp - cost
+    # case Repo.update user_change do
+    #   {:ok, struct}       -> # Updated with success
+    #     Logger.error("-> struct:#{struct}")
+
+    #   {:error, changeset} -> # Something went wrong
+    #     Logger.error("-> changeset:#{changeset}")
+    # end
+  end
+
   ### Memoized functions
 
   # Cached function get_userprofile

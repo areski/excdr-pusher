@@ -53,7 +53,7 @@ defmodule Collector do
   end
 
   def handle_info(:timeout_1sec, state) do
-    Logger.warn("(check alive) 1s heartbeat")
+    Logger.warn("(check collector alive) 1s heartbeat")
     # 1 sec
     Process.send_after(self(), :timeout_1sec, 1 * 1000)
     {:noreply, state}
