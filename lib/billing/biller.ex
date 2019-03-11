@@ -3,7 +3,6 @@ defmodule Biller do
   alias Decimal, as: D
   require Logger
 
-
   @moduledoc """
   This module implement the heartbeat to bill user by batch, rather than
   apply thousands of queries per seconds, we gather them cheaply in a process.
@@ -25,7 +24,7 @@ defmodule Biller do
       iex> Biller.stop
       :ok
   """
-  def start_link() do
+  def start_link do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
@@ -40,7 +39,7 @@ defmodule Biller do
   def init(args) do
     # Logger.error("-> init - args:#{inspect(args)}")
     Process.send_after(self(), :timeout_2sec, 1 * 2_000)
-    { :ok, Enum.into(args, %{}) }
+    {:ok, Enum.into(args, %{})}
   end
 
   # def init(state) do
@@ -63,7 +62,7 @@ defmodule Biller do
     Enum.each  state,  fn {user_atom, total_cost} ->
       # Logger.warn("user_id: #{user_atom} --> #{total_cost}")
       user_id = user_atom |> to_string |> String.split("_") |> Enum.fetch!(1) |> String.to_integer
-      cost_float =total_cost |> D.to_float
+      cost_float = total_cost |> D.to_float
       ExCdrPusher.DataUser.decrement_balance(user_id, cost_float)
     end
     Enum.into([], %{})
@@ -84,7 +83,7 @@ defmodule Biller do
       :ok
   """
   def add(key, value) do
-    GenServer.cast(__MODULE__, { :add, key, value })
+    GenServer.cast(__MODULE__, {:add, key, value})
   end
 
   def return_this, do: "THIS"
@@ -106,16 +105,16 @@ defmodule Biller do
   """
   # Convert ID to atom userid_1
   def add_userid(user_id, value) when is_float(value), do: add(String.to_atom("userid_#{user_id}"), value)
+
   # Convert interger to float
-  def add_userid(user_id, value) when is_integer(value), do: add(String.to_atom("userid_#{user_id}"), value/1)
+  def add_userid(user_id, value) when is_integer(value), do: add(String.to_atom("userid_#{user_id}"), value / 1)
+
   # Convert string to float or 0
   def add_userid(user_id, value) when is_binary(value) do
-    try do
       add(String.to_atom("userid_#{user_id}"), String.to_float(value))
-    rescue
-      _x ->
-        add(String.to_atom("userid_#{user_id}"), 0.0)
-    end
+  rescue
+    _x ->
+      add(String.to_atom("userid_#{user_id}"), 0.0)
   end
 
   @doc """
@@ -130,7 +129,7 @@ defmodule Biller do
       :ok
   """
   def get(key) do
-    GenServer.call(__MODULE__, { :get, key })
+    GenServer.call(__MODULE__, {:get, key})
   end
 
   @doc """
@@ -148,7 +147,7 @@ defmodule Biller do
   """
 
   def keys do
-    GenServer.call(__MODULE__, { :keys })
+    GenServer.call(__MODULE__, {:keys})
   end
 
   @doc """
@@ -172,16 +171,15 @@ defmodule Biller do
   """
 
   def delete(key) do
-    GenServer.cast(__MODULE__, { :remove, key })
+    GenServer.cast(__MODULE__, {:remove, key})
   end
 
   @doc """
   Flush the user and push their usage to the database
   """
   def flush_db do
-    GenServer.cast(__MODULE__, { :flush_db })
+    GenServer.cast(__MODULE__, {:flush_db})
   end
-
 
   def stop do
     GenServer.stop(__MODULE__)
@@ -191,32 +189,31 @@ defmodule Biller do
   # Server Implemention #
   #######################
 
-  def handle_cast({ :add, key, value }, state) do
+  def handle_cast({:add, key, value}, state) do
     value = if Map.has_key?(state, key) do
         D.add(D.from_float(value), state[key])
       else
         D.from_float(value)
       end
-    { :noreply, Map.put(state, key, value) }
+    {:noreply, Map.put(state, key, value)}
   end
 
-  def handle_cast({ :flush_db }, state) do
+  def handle_cast({:flush_db}, state) do
     state = func_flush_db(state)
-    { :noreply, state}
+    {:noreply, state}
   end
 
-  def handle_cast({ :remove, key }, state) do
-    { :noreply, Map.delete(state, key) }
+  def handle_cast({:remove, key}, state) do
+    {:noreply, Map.delete(state, key)}
   end
 
-  def handle_call({ :get, key }, _from, state) do
-    { :reply, state[key], state }
+  def handle_call({:get, key}, _from, state) do
+    {:reply, state[key], state}
   end
 
-  def handle_call({ :keys }, _from, state) do
-    { :reply, Map.keys(state), state }
+  def handle_call({:keys}, _from, state) do
+    {:reply, Map.keys(state), state}
   end
-
 
   #########################
   # Catch the un-expected #

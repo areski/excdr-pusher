@@ -2,12 +2,12 @@ defmodule PusherPG do
   use GenServer
   require Logger
 
+  alias Application, as: App
   alias Ecto.Adapters.SQL
   alias ExCdrPusher.CallCost
   alias ExCdrPusher.CDR
   alias ExCdrPusher.Repo
   alias ExCdrPusher.Sanitizer
-  alias Application, as: App
 
   @moduledoc """
   This is the GenServer to push CDRs to PostgreSQL...

@@ -47,7 +47,7 @@ defmodule ExCdrPusher.CallCost do
     iex> ExCdrPusher.CallCost.calculate_call_cost(1, 1, 12)
     0.12399
     iex> ExCdrPusher.CallCost.calculate_call_cost(1, 1, 120)
-    0.20000
+    0.2
   """
   def calculate_call_cost(user_id, leg_type, billsec) do
     # Configure a precision
@@ -57,15 +57,17 @@ defmodule ExCdrPusher.CallCost do
     billing_info = get_billing_info_per_leg(user, leg_type)
     billed_duration = Utils.calculate_billdur(billsec, billing_info["increment"])
 
-    call_cost = D.mult(D.div(billed_duration, D.from_float(60.0)), D.new(billing_info["rate"]))
-
-    call_cost = if Decimal.cmp(call_cost, D.new(billing_info["min_charge"])) == :lt do
-      billing_info["min_charge"] |> D.new |> D.to_float
-      else
-        call_cost |> D.to_float
+    cost = D.mult(D.div(billed_duration, D.from_float(60.0)), D.new(billing_info["rate"]))
+    call_cost = cond do
+        Decimal.cmp(cost, D.from_float(0.0)) == :eq ->
+          0.0
+        Decimal.cmp(cost, D.new(billing_info["min_charge"])) == :lt ->
+          billing_info["min_charge"] |> D.new |> D.to_float
+        true ->
+          cost |> D.to_float
       end
 
-    Logger.debug("-> calculate_call_cost - user_id:#{user_id} - call_cost:#{call_cost}")
+    # Logger.debug("-> calculate_call_cost - user_id:#{user_id} - call_cost:#{call_cost}")
     call_cost
   end
 
