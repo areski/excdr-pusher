@@ -44,10 +44,9 @@ defmodule PusherPG do
   Build CDR Map
   """
   def build_cdr_map(cdr) do
-    # Sanitize CDR
     sanitized_cdr = Sanitizer.cdr(cdr)
-    # Found cost and bill CDR
     call_cost = bill_cdr(sanitized_cdr)
+    extra_data = %{sip_to_host: sanitized_cdr[:sip_to_host]}
 
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields
@@ -68,7 +67,8 @@ defmodule PusherPG do
       hangup_cause_q850: sanitized_cdr[:hangup_cause_q850],
       campaign_id: sanitized_cdr[:campaign_id],
       billed_duration: sanitized_cdr[:billed_duration],
-      call_cost: call_cost
+      call_cost: call_cost,
+      extra_data: extra_data
     }
   end
 

@@ -53,6 +53,7 @@ defmodule ExCdrPusher.CDR do
     field :campaign_id, :integer
     field :billed_duration, :integer
     field :call_cost, :float, default: 0.0
+    field :extra_data, :map
   end
 end
 
