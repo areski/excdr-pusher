@@ -4,7 +4,7 @@ defmodule ExCdrPusher.Mixfile do
   def project do
     [
       app: :excdr_pusher,
-      version: "0.13.2",
+      version: "0.13.3",
       elixir: "~> 1.8.1",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
