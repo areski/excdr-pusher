@@ -38,6 +38,7 @@ defmodule ExCdrPusher.Mixfile do
       {:ecto, "~> 3.0.7"},
       {:ecto_sql, "~> 3.0.5"},
       {:postgrex, ">= 0.0.0"},
+      {:jason, "~> 1.1.2"},
       {:logger_file_backend, "0.0.10"},
       {:instream, "~> 0.19.0"},
       {:swab, github: "crownedgrouse/swab", branch: "master"},
