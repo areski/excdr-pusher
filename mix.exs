@@ -27,7 +27,9 @@ defmodule ExCdrPusher.Mixfile do
       {:ex_doc, "~> 0.19.3", only: :dev},
       {:distillery, "~> 2.0.12"},
       {:memoize, "~> 1.3.0"},
-      {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
+      {:sqlitex, "~> 1.5.1"},
+      # patched but now available in 1.5.1
+      # {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
       {:decimal, "~> 1.7"},
       # {:sqlitex, "~> 1.5.0"},
       {:esqlite, "0.3.0"},
@@ -44,7 +46,7 @@ defmodule ExCdrPusher.Mixfile do
       {:tzdata, "~> 0.5.19"},
       # used test and code style,
       {:mix_test_watch, "~> 0.9.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.0.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.0.3", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
