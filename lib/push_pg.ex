@@ -46,7 +46,10 @@ defmodule PusherPG do
   def build_cdr_map(cdr) do
     sanitized_cdr = Sanitizer.cdr(cdr)
     call_cost = bill_cdr(sanitized_cdr)
-    extra_data = %{sip_to_host: sanitized_cdr[:sip_to_host]}
+    extra_data = %{
+      sip_to_host: sanitized_cdr[:sip_to_host],
+      sip_local_network_addr: sanitized_cdr[:sip_local_network_addr]
+    }
 
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields

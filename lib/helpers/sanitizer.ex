@@ -62,7 +62,8 @@ defmodule ExCdrPusher.Sanitizer do
       nibble_total_billed: nibble_total_billed,
       hangup_cause_q850: hc_q850,
       campaign_id: campaign_id,
-      sip_to_host: cdr[:sip_to_host]
+      sip_to_host: cdr[:sip_to_host],
+      sip_local_network_addr: cdr[:sip_local_network_addr]
     }
   end
 
