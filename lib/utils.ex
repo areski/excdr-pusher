@@ -138,6 +138,8 @@ defmodule ExCdrPusher.Utils do
     2
     iex> ExCdrPusher.Utils.get_amd_status("UNSURE")
     3
+    iex> ExCdrPusher.Utils.get_amd_status("NOTSURE")
+    3
     iex> ExCdrPusher.Utils.get_amd_status("")
     0
   """
@@ -153,6 +155,9 @@ defmodule ExCdrPusher.Utils do
         2
 
       "UNSURE" ->
+        3
+
+      "NOTSURE" ->
         3
 
       _ ->
