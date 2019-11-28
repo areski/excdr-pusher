@@ -2,8 +2,8 @@
 For Debian9 we can use the images from docker hub
 https://hub.docker.com/_/elixir/
 
-$ docker pull elixir:1.7
+$ docker pull elixir:1.9.4
 
 Check is well installed:
 
-$ docker run -it --rm elixir:1.7
+$ docker run -it --rm elixir:1.9.4
