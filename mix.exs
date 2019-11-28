@@ -4,8 +4,8 @@ defmodule ExCdrPusher.Mixfile do
   def project do
     [
       app: :excdr_pusher,
-      version: "prod",
-      elixir: "~> 1.8.1",
+      version: "0.13.5",
+      elixir: "~> 1.9.4",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,30 +24,30 @@ defmodule ExCdrPusher.Mixfile do
   # Dependencies
   defp deps do
     [
-      {:ex_doc, "~> 0.19.3", only: :dev},
-      {:distillery, "~> 2.0.12"},
+      {:ex_doc, "~> 0.21.2", only: :dev},
+      {:distillery, "~> 2.1.1"},
       {:memoize, "~> 1.3.0"},
-      {:sqlitex, "~> 1.5.1"},
+      {:sqlitex, "~> 1.7.0"},
       # patched but now available in 1.5.1
       # {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
-      {:decimal, "~> 1.7"},
+      {:decimal, "~> 1.8.0"},
       # {:sqlitex, "~> 1.5.0"},
-      {:esqlite, "0.3.0"},
+      {:esqlite, "0.4.0"},
       # {:esqlite, git: "https://github.com/mmzeeman/esqlite.git", ref: "c1a0d60574539cda1f3310826945485f1d202d9c"},
       # {:esqlite, path: "/home/areski/projects/elixir/esqlite", override: true},
-      {:ecto, "~> 3.0.7"},
-      {:ecto_sql, "~> 3.0.5"},
+      {:ecto, "~> 3.2.5"},
+      {:ecto_sql, "~> 3.2.2"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.1.2"},
-      {:logger_file_backend, "0.0.10"},
-      {:instream, "~> 0.19.0"},
+      {:logger_file_backend, "0.0.11"},
+      {:instream, "~> 0.21.0"},
       {:swab, github: "crownedgrouse/swab", branch: "master"},
-      {:timex, "~> 3.5.0"},
+      {:timex, "~> 3.6.1"},
       # {:timex_ecto, "~> 3.3.0"},
-      {:tzdata, "~> 0.5.19"},
+      {:tzdata, "~> 1.0.2"},
       # used test and code style,
-      {:mix_test_watch, "~> 0.9.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.0.3", only: [:dev, :test], runtime: false}
+      {:mix_test_watch, "~> 1.0.2", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.1.5", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
