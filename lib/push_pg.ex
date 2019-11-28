@@ -114,7 +114,7 @@ defmodule PusherPG do
   """
   def insert_cdr(cdr_list) do
     cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
-    Logger.info("cdr_map: #{inspect(cdr_map)}")
+    # Logger.info("cdr_map: #{inspect(cdr_map)}")
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
 
     if nb_inserted > 0 do
