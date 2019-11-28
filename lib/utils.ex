@@ -99,30 +99,29 @@ defmodule ExCdrPusher.Utils do
   """
   def sanitize_hangup_cause(hangup_cause_q850, billsec, hangup_cause) do
     # If billsec is position then we should have a normal call -> 16
-    hangup_cause_q850 =
-      cond do
-        hangup_cause == "LOSE_RACE" ->
-          [502, billsec]
+    cond do
+      hangup_cause == "LOSE_RACE" ->
+        [502, billsec]
 
-        hangup_cause == "ORIGINATOR_CANCEL" ->
-          [487, billsec]
+      hangup_cause == "ORIGINATOR_CANCEL" ->
+        [487, billsec]
 
-        hangup_cause_q850 == 16 and billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
-          # We will mark those calls as rejected
-          # [21, billsec]
-          # Now we will set those call at 1 second as they have been answered
-          [16, 1]
+      hangup_cause_q850 == 16 and billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
+        # We will mark those calls as rejected
+        # [21, billsec]
+        # Now we will set those call at 1 second as they have been answered
+        [16, 1]
 
-        billsec > 0 ->
-          [16, billsec]
+      billsec > 0 ->
+        [16, billsec]
 
-        billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
-          # We will mark those calls as rejected
-          [21, billsec]
+      billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
+        # We will mark those calls as rejected
+        [21, billsec]
 
-        true ->
-          [convert_int(hangup_cause_q850, 0), billsec]
-      end
+      true ->
+        [convert_int(hangup_cause_q850, 0), billsec]
+    end
   end
 
   @doc ~S"""
