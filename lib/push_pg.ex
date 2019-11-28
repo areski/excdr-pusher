@@ -27,11 +27,13 @@ defmodule PusherPG do
   def bill_cdr(sanitized_cdr) do
     if App.fetch_env!(:excdr_pusher, :enable_billing) do
       # Billing enabled
-      call_cost = CallCost.calculate_call_cost(
-        sanitized_cdr[:user_id],
-        sanitized_cdr[:legtype],
-        sanitized_cdr[:billsec]
-      )
+      call_cost =
+        CallCost.calculate_call_cost(
+          sanitized_cdr[:user_id],
+          sanitized_cdr[:legtype],
+          sanitized_cdr[:billsec]
+        )
+
       # Add Billing for that user
       Biller.add_userid(sanitized_cdr[:user_id], call_cost)
       call_cost
@@ -46,6 +48,7 @@ defmodule PusherPG do
   def build_cdr_map(cdr) do
     sanitized_cdr = Sanitizer.cdr(cdr)
     call_cost = bill_cdr(sanitized_cdr)
+
     extra_data = %{
       sip_to_host: sanitized_cdr[:sip_to_host],
       sip_local_network_addr: sanitized_cdr[:sip_local_network_addr]
@@ -87,7 +90,9 @@ defmodule PusherPG do
 
     if sanitized_cdr[:legtype] == 1 do
       "process_cdr_retry(#{cdr[:callrequest_id]}, #{sanitized_cdr[:campaign_id]}, " <>
-        "#{sanitized_cdr[:legtype]}, #{sanitized_cdr[:hangup_cause_q850]}, #{sanitized_cdr[:amd_status]})"
+        "#{sanitized_cdr[:legtype]}, #{sanitized_cdr[:hangup_cause_q850]}, #{
+          sanitized_cdr[:amd_status]
+        })"
     end
   end
 
@@ -97,9 +102,10 @@ defmodule PusherPG do
   def build_sql_select_retry(cdrs) do
     sql_retry =
       cdrs
-      |> Enum.filter(fn(x) -> x[:legtype] == "1" end)
+      |> Enum.filter(fn x -> x[:legtype] == "1" end)
       |> Enum.map(&build_select_retry/1)
       |> Enum.join(", ")
+
     "SELECT " <> sql_retry
   end
 

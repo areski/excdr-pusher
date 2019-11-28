@@ -50,7 +50,7 @@ defmodule Biller do
 
   def handle_info(:timeout_2sec, state) do
     Process.send_after(self(), :timeout_2sec, 1 * 2_000)
-    cnt_user = state |> Enum.count
+    cnt_user = state |> Enum.count()
     Logger.warn("Biller alive [cnt_user: #{cnt_user}]")
     # Flush DB here
     state = func_flush_db(state)
@@ -59,12 +59,13 @@ defmodule Biller do
 
   def func_flush_db(state) do
     # Loop each user and run a DB query
-    Enum.each  state,  fn {user_atom, total_cost} ->
+    Enum.each(state, fn {user_atom, total_cost} ->
       # Logger.warn("user_id: #{user_atom} --> #{total_cost}")
-      user_id = user_atom |> to_string |> String.split("_") |> Enum.fetch!(1) |> String.to_integer
-      cost_float = total_cost |> D.to_float
+      user_id = user_atom |> to_string |> String.split("_") |> Enum.fetch!(1) |> String.to_integer()
+      cost_float = total_cost |> D.to_float()
       ExCdrPusher.DataUser.decrement_balance(user_id, cost_float)
-    end
+    end)
+
     Enum.into([], %{})
   end
 
@@ -104,14 +105,16 @@ defmodule Biller do
       :ok
   """
   # Convert ID to atom userid_1
-  def add_userid(user_id, value) when is_float(value), do: add(String.to_atom("userid_#{user_id}"), value)
+  def add_userid(user_id, value) when is_float(value),
+    do: add(String.to_atom("userid_#{user_id}"), value)
 
   # Convert interger to float
-  def add_userid(user_id, value) when is_integer(value), do: add(String.to_atom("userid_#{user_id}"), value / 1)
+  def add_userid(user_id, value) when is_integer(value),
+    do: add(String.to_atom("userid_#{user_id}"), value / 1)
 
   # Convert string to float or 0
   def add_userid(user_id, value) when is_binary(value) do
-      add(String.to_atom("userid_#{user_id}"), String.to_float(value))
+    add(String.to_atom("userid_#{user_id}"), String.to_float(value))
   rescue
     _x ->
       add(String.to_atom("userid_#{user_id}"), 0.0)
@@ -190,11 +193,13 @@ defmodule Biller do
   #######################
 
   def handle_cast({:add, key, value}, state) do
-    value = if Map.has_key?(state, key) do
+    value =
+      if Map.has_key?(state, key) do
         D.add(D.from_float(value), state[key])
       else
         D.from_float(value)
       end
+
     {:noreply, Map.put(state, key, value)}
   end
 
@@ -230,6 +235,7 @@ defmodule Biller do
     Logger.error(fn ->
       "terminate - going down - cp_id:#{inspect(state, charlists: :as_lists)}"
     end)
+
     Process.sleep(1000)
     :normal
   end
@@ -239,5 +245,4 @@ defmodule Biller do
     Logger.error("Biller: Got not expected handle_event: #{inspect(event)}")
     {:ok, state}
   end
-
 end

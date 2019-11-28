@@ -110,7 +110,6 @@ defmodule ExCdrPusher.Utils do
 
         true ->
           convert_int(hangup_cause_q850, 0)
-
       end
 
     # Fix Callcenter

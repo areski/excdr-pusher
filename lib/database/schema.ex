@@ -37,23 +37,23 @@ defmodule ExCdrPusher.CDR do
 
   # dialer_cdr is the DB table
   schema "dialer_cdr" do
-    field :callid, Ecto.UUID
-    field :callerid, :string
-    field :phone_number, :string
-    field :starting_date, :utc_datetime
-    field :duration, :integer, default: 0
-    field :billsec, :integer, default: 0
+    field(:callid, Ecto.UUID)
+    field(:callerid, :string)
+    field(:phone_number, :string)
+    field(:starting_date, :utc_datetime)
+    field(:duration, :integer, default: 0)
+    field(:billsec, :integer, default: 0)
     # field :hangup_cause,      :string
-    field :hangup_cause_q850, :integer, default: 0
-    field :leg_type, :integer
-    field :amd_status, :integer
-    field :callrequest_id, :integer
+    field(:hangup_cause_q850, :integer, default: 0)
+    field(:leg_type, :integer)
+    field(:amd_status, :integer)
+    field(:callrequest_id, :integer)
     # field :used_gateway_id,   :integer
     # field :user_id,           :integer
-    field :campaign_id, :integer
-    field :billed_duration, :integer
-    field :call_cost, :float, default: 0.0
-    field :extra_data, :map
+    field(:campaign_id, :integer)
+    field(:billed_duration, :integer)
+    field(:call_cost, :float, default: 0.0)
+    field(:extra_data, :map)
   end
 end
 

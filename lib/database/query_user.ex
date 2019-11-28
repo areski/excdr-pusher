@@ -17,6 +17,7 @@ defmodule ExCdrPusher.DataUser do
   >> ExCdrPusher.DataUser.get_userprofile(170)
   """
   def get_userprofile(nil), do: false
+
   def get_userprofile(user_id) do
     query =
       from(
@@ -43,6 +44,7 @@ defmodule ExCdrPusher.DataUser do
   """
   def decrement_balance(user_id, cost) do
     Logger.error("-> decrement_balance user_id:#{user_id} - cost:#{cost}")
+
     SchemaUserProfile
     |> Ecto.Query.where([p], p.user_id == ^user_id)
     |> Repo.update_all(inc: [balance: -cost])
