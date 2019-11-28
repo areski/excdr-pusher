@@ -63,7 +63,7 @@ defmodule PusherPG do
       phone_number: cdr[:destination_number],
       starting_date: sanitized_cdr[:cdrdate],
       duration: cdr[:duration],
-      billsec: cdr[:billsec],
+      billsec: sanitized_cdr[:billsec],
       leg_type: sanitized_cdr[:legtype],
       amd_status: sanitized_cdr[:amd_status],
       callrequest_id: cdr[:callrequest_id],
@@ -114,6 +114,7 @@ defmodule PusherPG do
   """
   def insert_cdr(cdr_list) do
     cdr_map = Enum.map(cdr_list, &build_cdr_map/1)
+    Logger.info("cdr_map: #{inspect(cdr_map)}")
     {nb_inserted, _} = Repo.insert_all(CDR, cdr_map, returning: false)
 
     if nb_inserted > 0 do

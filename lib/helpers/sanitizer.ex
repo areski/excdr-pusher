@@ -13,8 +13,39 @@ defmodule ExCdrPusher.Sanitizer do
   PostgreSQL insertion.
   """
   def cdr(cdr) do
-    # get billed_duration
-    billed_duration = Utils.calculate_billdur(cdr[:billsec], cdr[:nibble_increment])
+    # cdr = [
+    #   rowid: 1_496_038,
+    #   caller_id_name: "",
+    #   caller_id_number: "19252610000",
+    #   destination_number: "15107540000",
+    #   context: "default",
+    #   start_stamp: {{2019, 11, 28}, {19, 42, 34, 0}},
+    #   answer_stamp: nil,
+    #   end_stamp: {{2019, 11, 28}, {19, 43, 19, 0}},
+    #   duration: 5,
+    #   billsec: 0,
+    #   hangup_cause: "NORMAL_CLEARING",
+    #   uuid: "6c0b8040-aea0-4ff0-b2d3-09c530704d17",
+    #   bleg_uuid: "",
+    #   account_code: "",
+    #   user_id: "",
+    #   used_gateway_id: 5,
+    #   callrequest_id: 120_298_711,
+    #   nibble_total_billed: "",
+    #   nibble_increment: 6,
+    #   dialout_phone_number: "15107540000",
+    #   amd_status: "",
+    #   legtype: "1",
+    #   hangup_cause_q850: 16,
+    #   imported: 0,
+    #   pg_cdr_id: 0,
+    #   campaign_id: 1,
+    #   start_uepoch: 1_475_091_754_000_000,
+    #   answer_uepoch: nil,
+    #   amd_result: "PERSON",
+    #   sip_to_host: "sip.pbx01.com",
+    #   sip_local_network_addr: "127.0.0.1"
+    # ]
 
     # get cdr date
     # IO.inspect cdr[:start_stamp]
@@ -43,8 +74,17 @@ defmodule ExCdrPusher.Sanitizer do
     nibble_total_billed = Utils.convert_float(cdr[:nibble_total_billed], 0.0)
 
     # Get hangup_cause_q850, on transfer hc_q850 needs to be corrected, Fix for callcenter
-    hc_q850 =
+    [hc_q850, new_billsec] =
       Utils.sanitize_hangup_cause(cdr[:hangup_cause_q850], cdr[:billsec], cdr[:hangup_cause])
+
+    # get billed_duration
+    billed_duration = Utils.calculate_billdur(new_billsec, cdr[:nibble_increment])
+
+    # Logger.error(
+    #   "-> hc_q850:#{inspect(hc_q850)} - new_billsec:#{inspect(new_billsec)} - billed_duration: #{
+    #     billed_duration
+    #   } - old_billsec:#{inspect(cdr[:billsec])}"
+    # )
 
     # get user_id
     user_id = clean_id(cdr[:user_id])
@@ -54,7 +94,7 @@ defmodule ExCdrPusher.Sanitizer do
 
     %{
       billed_duration: billed_duration,
-      billsec: cdr[:billsec],
+      billsec: new_billsec,
       user_id: user_id,
       cdrdate: cdrdate,
       legtype: legtype,

@@ -84,45 +84,45 @@ defmodule ExCdrPusher.Utils do
   propagated from bleg to aleg...
 
   ## Example
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 10, 'NORMAL_CLEARING')
-    16
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 18, 'NORMAL_CLEARING')
-    16
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 0, 'BUSY')
-    17
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'LOSE_RACE')
-    502
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'ORIGINATOR_CANCEL')
-    487
-    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, 'NORMAL_CLEARING')
-    21
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 10, "NORMAL_CLEARING")
+    [16, 10]
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 18, "NORMAL_CLEARING")
+    [16, 18]
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(17, 0, "BUSY")
+    [17, 0]
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, "LOSE_RACE")
+    [502, 0]
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, "ORIGINATOR_CANCEL")
+    [487, 0]
+    iex> ExCdrPusher.Utils.sanitize_hangup_cause(16, 0, "NORMAL_CLEARING")
+    [16, 1]
   """
   def sanitize_hangup_cause(hangup_cause_q850, billsec, hangup_cause) do
     # If billsec is position then we should have a normal call -> 16
     hangup_cause_q850 =
       cond do
-        billsec > 0 ->
-          16
+        hangup_cause == "LOSE_RACE" ->
+          [502, billsec]
 
-        billsec == 0 and hangup_cause == 'NORMAL_CLEARING' ->
+        hangup_cause == "ORIGINATOR_CANCEL" ->
+          [487, billsec]
+
+        hangup_cause_q850 == 16 and billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
           # We will mark those calls as rejected
-          21
+          # [21, billsec]
+          # Now we will set those call at 1 second as they have been answered
+          [16, 1]
+
+        billsec > 0 ->
+          [16, billsec]
+
+        billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
+          # We will mark those calls as rejected
+          [21, billsec]
 
         true ->
-          convert_int(hangup_cause_q850, 0)
+          [convert_int(hangup_cause_q850, 0), billsec]
       end
-
-    # Fix Callcenter
-    case hangup_cause do
-      'LOSE_RACE' ->
-        502
-
-      'ORIGINATOR_CANCEL' ->
-        487
-
-      _ ->
-        hangup_cause_q850
-    end
   end
 
   @doc ~S"""
