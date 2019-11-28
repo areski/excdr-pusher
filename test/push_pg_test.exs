@@ -61,7 +61,8 @@ defmodule PusherPGTest do
              hangup_cause_q850: 16,
              leg_type: 1,
              phone_number: "0034650780000",
-             starting_date: starting_date
+             starting_date: starting_date,
+             extra_data: %{sip_local_network_addr: nil, sip_to_host: nil}
            }
 
     # assert PusherPG.push("hello") == :ok

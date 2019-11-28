@@ -39,7 +39,7 @@ defmodule SqliteCDRTest do
           '2016-09-20 10:14:37', '2016-09-20 10:14:48',
           '2016-09-20 10:15:00', 23, 12, 'NORMAL_CLEARING',
           'eb43ce0a-bd20-46aa-ba14-9a22d6d0193c', '', '', 1, 1681, '0.020000',
-          6, '0034650780000', 'MACHINE', '1', 16, 1, '', 0, 0);")
+          6, '0034650780000', 'MACHINE', '1', 16, 1, '', 0, 0, '', '');")
 
     {:ok, cdr_list} = HSqlite.fetch_cdr()
     assert length(cdr_list) == 1
