@@ -1,4 +1,7 @@
+FROM jessie_elixir110
+# replaced by custom image using Jessie
 FROM elixir:1.9.4
+
 
 MAINTAINER Areski <areski@gmail.com>
 
