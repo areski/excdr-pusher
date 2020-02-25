@@ -57,5 +57,6 @@ INSERT INTO "cdr" VALUES('Outbound Call','0034650780000','0034650780000','defaul
 
 -- ALTER TABLE cdr ADD COLUMN sip_to_host VARCHAR;
 -- ALTER TABLE cdr ADD COLUMN sip_local_network_addr VARCHAR;
+-- ALTER TABLE cdr ADD COLUMN dialed_user VARCHAR;
 
 COMMIT;

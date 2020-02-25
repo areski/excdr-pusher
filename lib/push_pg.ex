@@ -60,7 +60,7 @@ defmodule PusherPG do
     %{
       callid: cdr[:uuid],
       callerid: cdr[:caller_id_number],
-      phone_number: cdr[:destination_number],
+      phone_number: sanitized_cdr[:destination_number],
       starting_date: sanitized_cdr[:cdrdate],
       duration: cdr[:duration],
       billsec: sanitized_cdr[:billsec],

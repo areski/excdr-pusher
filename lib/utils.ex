@@ -80,6 +80,41 @@ defmodule ExCdrPusher.Utils do
   end
 
   @doc ~S"""
+  Fix destination when using WebRTC, in order
+  to avoid ending up with destination like `bivi5t2k`
+
+  1) If Bleg
+  2) If variable_dialed_user is not empty
+  3) if variable_dialed_user start with `agent-`
+
+
+  ## Example
+    iex> ExCdrPusher.Utils.fix_destination(1, "", "123456789")
+    "123456789"
+    iex> ExCdrPusher.Utils.fix_destination(1, nil, "123456789")
+    "123456789"
+    iex> ExCdrPusher.Utils.fix_destination(2, "", "123456789")
+    "123456789"
+    iex> ExCdrPusher.Utils.fix_destination(1, "agent-1234", "123456789")
+    "123456789"
+    iex> ExCdrPusher.Utils.fix_destination(2, "88888", "123456789")
+    "123456789"
+    iex> ExCdrPusher.Utils.fix_destination(2, "agent-1234", "123456789")
+    "agent-1234"
+  """
+  def fix_destination(_, nil, destination), do: destination
+  def fix_destination(_, "", destination), do: destination
+  def fix_destination(leg_type, _, destination) when leg_type != 2, do: destination
+
+  def fix_destination(_, dialed_user, destination) do
+    if String.starts_with?(dialed_user, "agent-") do
+      dialed_user
+    else
+      destination
+    end
+  end
+
+  @doc ~S"""
   Fix callstatus for aleg transfered calls as the call_status is
   propagated from bleg to aleg...
 

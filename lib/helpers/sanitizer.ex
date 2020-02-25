@@ -35,7 +35,7 @@ defmodule ExCdrPusher.Sanitizer do
     #   nibble_increment: 6,
     #   dialout_phone_number: "15107540000",
     #   amd_status: "",
-    #   legtype: "1",
+    #   legtype: "2",
     #   hangup_cause_q850: 16,
     #   imported: 0,
     #   pg_cdr_id: 0,
@@ -44,7 +44,8 @@ defmodule ExCdrPusher.Sanitizer do
     #   answer_uepoch: nil,
     #   amd_result: "PERSON",
     #   sip_to_host: "sip.pbx01.com",
-    #   sip_local_network_addr: "127.0.0.1"
+    #   sip_local_network_addr: "127.0.0.1",
+    #   dialed_user: "agent-27228"
     # ]
 
     # get cdr date
@@ -80,6 +81,9 @@ defmodule ExCdrPusher.Sanitizer do
     # get billed_duration
     billed_duration = Utils.calculate_billdur(new_billsec, cdr[:nibble_increment])
 
+    # Fix Destination for WebRTC
+    destination_number = Utils.fix_destination(legtype, cdr[:dialed_user], cdr[:destination_number])
+
     # Logger.error(
     #   "-> hc_q850:#{inspect(hc_q850)} - new_billsec:#{inspect(new_billsec)} - billed_duration: #{
     #     billed_duration
@@ -93,6 +97,7 @@ defmodule ExCdrPusher.Sanitizer do
     campaign_id = clean_id(cdr[:campaign_id])
 
     %{
+      destination_number: destination_number,
       billed_duration: billed_duration,
       billsec: new_billsec,
       user_id: user_id,
