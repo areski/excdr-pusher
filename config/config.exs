@@ -31,28 +31,26 @@ use Mix.Config
 
 # tell logger to load a LoggerFileBackend processes
 config :logger,
-  backends: [{LoggerFileBackend, :error_log},
-             {LoggerFileBackend, :debug_log}],
-  compile_time_purge_level: :info
+  backends: [{LoggerFileBackend, :error_log}, {LoggerFileBackend, :debug_log}],
+  compile_time_purge_matching: [
+    [level_lower_than: :info]
+  ]
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
   path: "/var/log/excdr_pusher/error.log",
   level: :warn,
   format: "$date $time $metadata[$level] $levelpad$message\n"
-  # metadata: [:file, :line]
+
+# metadata: [:file, :line]
 
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
   path: "/var/log/excdr_pusher/debug.log",
   level: :info,
   format: "$date $time $metadata[$level] $levelpad$message\n"
-  # metadata: [:file, :line]
 
-
-# config :logger,
-#   backends: [:console],
-#   compile_time_purge_level: :debug
+# metadata: [:file, :line]
 
 # config :logger, :console,
 #   format: "\n$time $metadata[$level] $levelpad$message\n"
@@ -69,19 +67,17 @@ config :excdr_pusher,
 # Push to
 config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
 
-config :excdr_pusher, ExCdrPusher.Repo,
-  url: "postgres://postgres:password@localhost/newfiesdb"
-
+config :excdr_pusher, ExCdrPusher.Repo, url: "postgres://postgres:password@localhost/newfiesdb"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
 
-if Mix.env == :test or Mix.env == :dev do
+if Mix.env() == :test or Mix.env() == :dev do
   config :mix_test_watch,
     tasks: [
       "test",
       "credo -a --strict",
-      "dialyzer",
+      "dialyzer"
     ]
 end

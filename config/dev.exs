@@ -4,28 +4,31 @@ use Mix.Config
 
 # tell logger to load a LoggerFileBackend processes
 config :logger,
-  backends: [{LoggerFileBackend, :error_log},
-             {LoggerFileBackend, :debug_log}],
-  compile_time_purge_level: :info
+  backends: [{LoggerFileBackend, :error_log}, {LoggerFileBackend, :debug_log}],
+  compile_time_purge_matching: [
+    [level_lower_than: :info]
+  ]
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :error_log,
   path: "/var/log/excdr_pusher/error.log",
   level: :warn,
   format: "$date $time $metadata[$level] $levelpad$message\n"
-  # metadata: [:file, :line]
+
+# metadata: [:file, :line]
 
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
   path: "/var/log/excdr_pusher/debug.log",
   level: :info,
   format: "$date $time $metadata[$level] $levelpad$message\n"
-  # metadata: [:file, :line]
+
+# metadata: [:file, :line]
 
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./private/freeswitchcdr.db",
-  influxdatabase:  "newfiesdialer",
+  influxdatabase: "newfiesdialer",
   # ms Time between fetchs (in millisecond)
   tick_frequency: 200,
   # Amount of CDRs to fetch every tick_frequency
@@ -42,12 +45,12 @@ config :excdr_pusher, ExCdrPusher.Repo,
 
 # InfluxDB configuration
 config :excdr_pusher, ExCdrPusher.InConnection,
-  host:      "influxdb-host",
+  host: "influxdb-host",
   # http_opts: [ insecure: true, proxy: "http://company.proxy" ],
-  pool:      [ max_overflow: 0, size: 1 ],
-  port:      8086,
-  scheme:    "http",
-  writer:    Instream.Writer.Line
+  pool: [max_overflow: 0, size: 1],
+  port: 8086,
+  scheme: "http",
+  writer: Instream.Writer.Line
 
 # If you need to load configuration from the environment at runtime, you will
 # need to do something like the following:

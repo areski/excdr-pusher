@@ -24,30 +24,30 @@ defmodule ExCdrPusher.Mixfile do
   # Dependencies
   defp deps do
     [
-      {:ex_doc, "~> 0.21.3", only: :dev},
+      {:ex_doc, "~> 0.22.1", only: :dev},
       {:distillery, "~> 2.1.1"},
       {:memoize, "~> 1.3.0"},
-      {:sqlitex, "~> 1.7.0"},
+      {:sqlitex, "~> 1.7.1"},
       # patched but now available in 1.5.1
       # {:sqlitex, path: "/home/areski/projects/elixir/sqlitex", override: true},
       {:decimal, "~> 1.8.1"},
       # {:sqlitex, "~> 1.5.0"},
-      {:esqlite, "0.4.0"},
+      {:esqlite, "0.4.1"},
       # {:esqlite, git: "https://github.com/mmzeeman/esqlite.git", ref: "c1a0d60574539cda1f3310826945485f1d202d9c"},
       # {:esqlite, path: "/home/areski/projects/elixir/esqlite", override: true},
-      {:ecto, "~> 3.3.3"},
-      {:ecto_sql, "~> 3.3.4"},
+      {:ecto, "~> 3.4.4"},
+      {:ecto_sql, "~> 3.4.4"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.1.2"},
+      {:jason, "~> 1.2.1"},
       {:logger_file_backend, "0.0.11"},
       {:instream, "~> 0.22.0"},
       {:swab, github: "crownedgrouse/swab", branch: "master"},
-      {:timex, "~> 3.6.1"},
+      {:timex, "~> 3.6.2"},
       # {:timex_ecto, "~> 3.3.0"},
       {:tzdata, "~> 1.0.3"},
       # used test and code style,
       {:mix_test_watch, "~> 1.0.2", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.2.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.4.0", only: [:dev, :test], runtime: false}
       # {:dogma, "~> 0.1", only: :dev},
     ]
   end
