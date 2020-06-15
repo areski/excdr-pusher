@@ -18,7 +18,10 @@ defmodule ExCdrPusher.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [mod: {ExCdrPusher, []}, extra_applications: [:logger]]
+    [
+      extra_applications: [:logger],
+      mod: {ExCdrPusher.Application, []}
+    ]
   end
 
   # Dependencies
@@ -44,7 +47,7 @@ defmodule ExCdrPusher.Mixfile do
     ]
   end
 
-  defp description, do: "Push FreeSWITCH CDRS from Sqlite to PostgreSQL & InfluxDB"
+  defp description, do: "Push FreeSWITCH CDRS from Sqlite to PostgreSQL"
 
   defp package do
     [

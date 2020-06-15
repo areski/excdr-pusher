@@ -9,39 +9,25 @@ defmodule Collector do
   PostgreSQL
   """
 
-  # @tick_freq 100 # 100ms
-  @tick_freq Application.fetch_env!(:excdr_pusher, :tick_frequency)
-
   def start_link(state, opts \\ []) do
     GenServer.start_link(__MODULE__, state, opts)
   end
 
   def init(state) do
-    log_version()
-
     Logger.info(
       "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     )
 
     # 0.1 sec
-    Process.send_after(self(), :timeout_tick, @tick_freq)
+    Process.send_after(
+      self(),
+      :timeout_tick,
+      Application.fetch_env!(:excdr_pusher, :tick_frequency)
+    )
+
     # 1 sec
     Process.send_after(self(), :timeout_1sec, 1 * 1000)
     {:ok, state}
-  end
-
-  def log_version do
-    {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
-    app_version = List.to_string(vsn)
-    {_, _, ex_ver} = List.keyfind(:application.which_applications(), :elixir, 0)
-    erl_version = :erlang.system_info(:otp_release)
-
-    Logger.error(
-      "[starting] excdr_pusher (app_version:#{app_version} - " <>
-        "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
-    )
-
-    Logger.error("[config] tick_freq:#{@tick_freq}")
   end
 
   def handle_info(:timeout_tick, state) do
@@ -59,7 +45,11 @@ defmodule Collector do
 
   defp schedule_task do
     # 0.1 sec
-    Process.send_after(self(), :timeout_tick, @tick_freq)
+    Process.send_after(
+      self(),
+      :timeout_tick,
+      Application.fetch_env!(:excdr_pusher, :tick_frequency)
+    )
 
     if File.regular?(Application.fetch_env!(:excdr_pusher, :sqlite_db)) do
       start_import()

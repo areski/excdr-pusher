@@ -1,14 +1,15 @@
-defmodule ExCdrPusher do
-  use Application
-
-  @moduledoc """
-  Module to create the supervisor for the main application
-  """
-
+defmodule ExCdrPusher.Application do
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
+  @moduledoc false
+
+  require Logger
+  use Application
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
+
+    log_app_info()
 
     # Define workers and child supervisors to be supervised
     children = [
@@ -31,5 +32,25 @@ defmodule ExCdrPusher do
     ]
 
     Supervisor.start_link(children, opts)
+  end
+
+  @doc """
+  log_app_info will log Application information such as version and some settings
+  """
+  def log_app_info do
+    {:ok, vsn} = :application.get_key(:excdr_pusher, :vsn)
+    app_version = List.to_string(vsn)
+    {_, _, ex_ver} = List.keyfind(:application.which_applications(), :elixir, 0)
+    erl_version = :erlang.system_info(:otp_release)
+
+    Logger.error("========================================================")
+
+    Logger.error(
+      "[starting] excdr_pusher (app_version:#{app_version} - " <>
+        "ex_ver:#{ex_ver} - erl_version:#{erl_version})"
+    )
+
+    tick_freq = Application.fetch_env!(:excdr_pusher, :tick_frequency)
+    Logger.error("[config] tick_freq:#{tick_freq}")
   end
 end
