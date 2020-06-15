@@ -83,13 +83,6 @@ defmodule Collector do
     PusherPG.sync_push(cdr_list)
   end
 
-  # defp start_pushing_cdr(cdr_list) do
-  #   # Send CDRs to PostgreSQL
-  #   PusherPG.push(cdr_list)
-  #   # Send CDRs to InfluxDB
-  #   # PushInfluxDB.push(cdr_list)
-  # end
-
   # def push_singlecdr(result) do
   #   case result do
   #     {:ok, cdrs} ->
