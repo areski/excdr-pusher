@@ -12,18 +12,13 @@ defmodule ExCdrPusher do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Starts a worker by calling: ExCdrPusher.Worker.start_link(arg1, ...)
-      # worker(ExCdrPusher.Worker, [arg1, arg2, arg3]),
       supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
       worker(PusherPG, [0]),
       worker(Biller, [])
       # `Sqlitex.Server` is not used as it's not possible to catch errors on
       # reading / opening the database
-      # worker(Sqlitex.Server, [
-      #   Application.fetch_env!(:excdr_pusher, :sqlite_db),
-      #   [name: Sqlitex.Server]]),
-      # ExCdrPusher.InConnection.child_spec,
+      # worker(Sqlitex.Server, [Application.fetch_env!(:excdr_pusher, :sqlite_db), [name: Sqlitex.Server]]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

@@ -24,21 +24,21 @@ defmodule ExCdrPusher.Mixfile do
   # Dependencies
   defp deps do
     [
-      {:ex_doc, "~> 0.22.1", only: :dev},
-      {:distillery, "~> 2.1.1"},
-      {:memoize, "~> 1.3.0"},
-      {:sqlitex, "~> 1.7.1"},
-      {:decimal, "~> 1.8.1"},
-      {:esqlite, "0.4.1"},
       {:ecto, "~> 3.4.5"},
       {:ecto_sql, "~> 3.4.4"},
       {:postgrex, ">= 0.0.0"},
+      {:sqlitex, "~> 1.7.1"},
+      {:esqlite, "0.4.1"},
       {:jason, "~> 1.2.1"},
       {:logger_file_backend, "0.0.11"},
-      # {:swab, github: "crownedgrouse/swab", branch: "master"},
+      {:observer_cli, "~> 1.5.3"},
+      {:distillery, "~> 2.1.1"},
+      {:memoize, "~> 1.3.0"},
+      {:decimal, "~> 1.8.1"},
       {:timex, "~> 3.6.2"},
       {:tzdata, "~> 1.0.3"},
       # used test and code style,
+      {:ex_doc, "~> 0.22.1", only: :dev},
       {:mix_test_watch, "~> 1.0.2", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.4.0", only: [:dev, :test], runtime: false}
     ]

@@ -57,6 +57,12 @@ defmodule Biller do
     {:noreply, state}
   end
 
+  # catch for others handle info
+  def handle_info(msg, state) do
+    Logger.error("Biller: Got not expected handle_info: #{inspect(msg)}")
+    {:ok, state}
+  end
+
   def func_flush_db(state) do
     # Loop each user and run a DB query
     Enum.each(state, fn {user_atom, total_cost} ->
@@ -223,12 +229,6 @@ defmodule Biller do
   #########################
   # Catch the un-expected #
   #########################
-
-  # catch for others handle info
-  def handle_info(msg, state) do
-    Logger.error("Biller: Got not expected handle_info: #{inspect(msg)}")
-    {:ok, state}
-  end
 
   def terminate(_reason, state) do
     # Do Shutdown Stuff

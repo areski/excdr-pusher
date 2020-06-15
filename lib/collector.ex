@@ -23,8 +23,6 @@ defmodule Collector do
       "[init] start collecting CDRs from " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
     )
 
-    # Removed as we do it during the installation...
-    # HSqlite.sqlite_create_fields()
     # 0.1 sec
     Process.send_after(self(), :timeout_tick, @tick_freq)
     # 1 sec
@@ -70,9 +68,6 @@ defmodule Collector do
         "Sqlite database not found: " <> Application.fetch_env!(:excdr_pusher, :sqlite_db)
       )
     end
-
-    # current_date = :os.timestamp |> :calendar.now_to_datetime
-    # Logger.debug "#{inspect current_date}"
   end
 
   defp start_import do
