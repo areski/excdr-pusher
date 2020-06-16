@@ -67,9 +67,6 @@ defmodule PusherPG do
       leg_type: sanitized_cdr[:legtype],
       amd_status: sanitized_cdr[:amd_status],
       callrequest_id: cdr[:callrequest_id],
-      # used_gateway_id: cdr[:used_gateway_id],
-      # user_id: sanitized_cdr[:user_id],
-      # hangup_cause: cdr[:hangup_cause],
       hangup_cause_q850: sanitized_cdr[:hangup_cause_q850],
       campaign_id: sanitized_cdr[:campaign_id],
       billed_duration: sanitized_cdr[:billed_duration],
@@ -121,7 +118,6 @@ defmodule PusherPG do
       Logger.info("PG CDRs inserted (#{nb_inserted})")
 
       sql_retry = build_sql_select_retry(cdr_list)
-      # Run SQL
       result = SQL.query!(Repo, sql_retry)
 
       Logger.debug(fn ->
@@ -129,18 +125,6 @@ defmodule PusherPG do
       end)
     end
 
-    #
-    # update CDR ID disabled / to implement it we need to use returning: true
-    # and use the callid to know which Sqlite CDR to update
-    #
-    # case result do
-    #   %CDR{id: pg_cdr_id} ->
-    #     Logger.info "PG_CDR_ID -> #{pg_cdr_id}"
-    #     Collector.update_cdr_ok(cdr[:rowid], pg_cdr_id)
-    #   {:error, err} ->
-    #     Collector.update_cdr_error(cdr[:rowid])
-    #     Logger.error err
-    # end
     {:ok, nb_inserted}
   end
 
@@ -176,8 +160,6 @@ defmodule PusherPG do
 
   def terminate(_reason, _state) do
     # Do Shutdown Stuff
-    # IO.puts "Going Down: #{inspect(state)}"
-    # :timer.sleep(1000)
     Process.sleep(1000)
     :normal
   end

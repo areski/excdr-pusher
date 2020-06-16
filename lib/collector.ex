@@ -67,37 +67,4 @@ defmodule Collector do
     # Send CDRs to PostgreSQL
     PusherPG.sync_push(cdr_list)
   end
-
-  # def push_singlecdr(result) do
-  #   case result do
-  #     {:ok, cdrs} ->
-  #       results = Enum.map(cdrs, &PusherPG.push/1)
-  #       if Enum.any?(results, fn(x) -> x != :ok end) do
-  #         # Mark them all not imported
-  #         Logger.error "Detected errors on import..."
-  #         Logger.error "Error results: #{inspect results}"
-  #       end
-  #   end
-  # end
-
-  # Not used at the moment, it was used by push_pg to update status on insert
-  # def handle_cast({:pg_cdr_ok, rowid, pg_cdr_id}, state) do
-  #   HSqlite.update_sqlite_cdr_ok(rowid, pg_cdr_id)
-  #   {:noreply, state}
-  # end
-
-  # def handle_cast({:pg_cdr_error, rowid}, state) do
-  #   HSqlite.update_sqlite_cdr_error(rowid)
-  #   {:noreply, state}
-  # end
-
-  # # Async mark CDR Ok
-  # def update_cdr_ok(rowid, pg_cdr_id) do
-  #   GenServer.cast(__MODULE__, {:pg_cdr_ok, rowid, pg_cdr_id})
-  # end
-
-  # # Async mark CDR error
-  # def update_cdr_error(rowid) do
-  #   GenServer.cast(__MODULE__, {:pg_cdr_error, rowid})
-  # end
 end
