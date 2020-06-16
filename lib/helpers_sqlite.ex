@@ -10,7 +10,9 @@ defmodule ExCdrPusher.HSqlite do
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         fetchsql = "SELECT OID, * FROM cdr WHERE imported=0 ORDER BY OID DESC LIMIT ?;"
-        Sqlitex.query(db, fetchsql, bind: [App.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
+        cdrs = Sqlitex.query(db, fetchsql, bind: [App.fetch_env!(:excdr_pusher, :amount_cdr_fetch)])
+        Sqlitex.close(db)
+        cdrs
 
       {:error, reason} ->
         Logger.error(reason)
@@ -29,6 +31,7 @@ defmodule ExCdrPusher.HSqlite do
     case Sqlitex.open(App.fetch_env!(:excdr_pusher, :sqlite_db)) do
       {:ok, db} ->
         Sqlitex.query(db, sql, bind: ids)
+        Sqlitex.close(db)
 
       {:error, reason} ->
         Logger.error(reason)

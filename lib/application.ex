@@ -22,8 +22,6 @@ defmodule ExCdrPusher.Application do
       # worker(Sqlitex.Server, [Application.fetch_env!(:excdr_pusher, :sqlite_db), [name: Sqlitex.Server]]),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [
       strategy: :one_for_one,
       max_restarts: 100,

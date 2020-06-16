@@ -29,7 +29,8 @@ CREATE TABLE cdr (
     campaign_id INTEGER,
     job_uuid VARCHAR,
     imported INTEGER DEFAULT 0,
-    pg_cdr_id INTEGER DEFAULT 0);
+    pg_cdr_id INTEGER DEFAULT 0
+);
 
 
 INSERT INTO "cdr" VALUES('0034650780000','0034650780000','246142691889264','default','2016-09-20 06:20:13','','2016-09-20 06:20:13',0,0,'NORMAL_TEMPORARY_FAILURE','1b16c95a-bab7-43b5-a219-01bc35d56bc4','','acc',1,1681,'','','246142691889264@127.0.0.1','','2',41, 1, '', 0, 0);
