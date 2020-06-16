@@ -18,33 +18,21 @@ defmodule ExCdrPusher.Sanitizer do
     #   caller_id_name: "",
     #   caller_id_number: "19252610000",
     #   destination_number: "15107540000",
-    #   context: "default",
     #   start_stamp: {{2019, 11, 28}, {19, 42, 34, 0}},
-    #   answer_stamp: nil,
-    #   end_stamp: {{2019, 11, 28}, {19, 43, 19, 0}},
     #   duration: 5,
     #   billsec: 0,
     #   hangup_cause: "NORMAL_CLEARING",
     #   uuid: "6c0b8040-aea0-4ff0-b2d3-09c530704d17",
-    #   bleg_uuid: "",
-    #   account_code: "",
     #   user_id: "",
-    #   used_gateway_id: 5,
     #   callrequest_id: 120_298_711,
     #   nibble_total_billed: "",
     #   nibble_increment: 6,
-    #   dialout_phone_number: "15107540000",
     #   amd_status: "",
     #   legtype: "2",
     #   hangup_cause_q850: 16,
     #   imported: 0,
-    #   pg_cdr_id: 0,
     #   campaign_id: 1,
-    #   start_uepoch: 1_475_091_754_000_000,
-    #   answer_uepoch: nil,
     #   amd_result: "PERSON",
-    #   sip_to_host: "sip.pbx01.com",
-    #   sip_local_network_addr: "127.0.0.1",
     #   dialed_user: "agent-27228"
     # ]
 
@@ -106,9 +94,7 @@ defmodule ExCdrPusher.Sanitizer do
       amd_status: amd_status,
       nibble_total_billed: nibble_total_billed,
       hangup_cause_q850: hc_q850,
-      campaign_id: campaign_id,
-      sip_to_host: cdr[:sip_to_host],
-      sip_local_network_addr: cdr[:sip_local_network_addr]
+      campaign_id: campaign_id
     }
   end
 

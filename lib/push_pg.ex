@@ -49,11 +49,6 @@ defmodule PusherPG do
     sanitized_cdr = Sanitizer.cdr(cdr)
     call_cost = bill_cdr(sanitized_cdr)
 
-    extra_data = %{
-      sip_to_host: sanitized_cdr[:sip_to_host],
-      sip_local_network_addr: sanitized_cdr[:sip_local_network_addr]
-    }
-
     # maybe we could move construction of %CDR to Sanitizer.cdr and
     # kind of sanitize all the fields
     # so we use sanitized_cdr[:field_name_xy] everywhere
@@ -70,8 +65,7 @@ defmodule PusherPG do
       hangup_cause_q850: sanitized_cdr[:hangup_cause_q850],
       campaign_id: sanitized_cdr[:campaign_id],
       billed_duration: sanitized_cdr[:billed_duration],
-      call_cost: call_cost,
-      extra_data: extra_data
+      call_cost: call_cost
     }
   end
 
@@ -79,7 +73,7 @@ defmodule PusherPG do
   Build Select to process retry
 
   ## Example
-    iex> PusherPG.build_select_retry([rowid: 29, caller_id_name: "Outbound Call", caller_id_number: "0034650780000", destination_number: "0034650780000", context: "default", start_stamp: {{2016, 9, 20}, {10, 14, 37, 0}}, answer_stamp: {{2016, 9, 20}, {10, 14, 48, 0}}, end_stamp: {{2016, 9, 20}, {10, 15, 0, 0}}, duration: 23, billsec: 12, uuid: "eb43ce0a-bd20-46aa-ba14-9a22d6d0193c", bleg_uuid: "", account_code: "", callrequest_id: 1681, nibble_total_billed: "0.020000", nibble_increment: 6, dialout_phone_number: "0034650780000", amd_result: "MACHINE", legtype: "1", hangup_cause_q850: 16, campaign_id: 1, job_uuid: "", imported: 0, pg_cdr_id: 0])
+    iex> PusherPG.build_select_retry([rowid: 29, caller_id_name: "Outbound Call", caller_id_number: "0034650780000", destination_number: "0034650780000", start_stamp: {{2016, 9, 20}, {10, 14, 37, 0}}, duration: 23, billsec: 12, uuid: "eb43ce0a-bd20-46aa-ba14-9a22d6d0193c", callrequest_id: 1681, nibble_total_billed: "0.020000", nibble_increment: 6, amd_result: "MACHINE", legtype: "1", hangup_cause_q850: 16, campaign_id: 1, imported: 0])
     "process_cdr_retry(1681, 1, 1, 16, 2)"
   """
   def build_select_retry(cdr) do
