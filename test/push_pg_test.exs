@@ -84,7 +84,7 @@ defmodule PusherPGTest do
         amd_status: "machine",
         legtype: "1",
         hangup_cause_q850: 16,
-        imported: 0
+        imported: 0,
         campaign_id: 139,
         amd_result: "PERSON"
       ]

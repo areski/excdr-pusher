@@ -28,6 +28,7 @@ config :logger, :debug_log,
 config :excdr_pusher,
   # Collect from
   sqlite_db: "./private/freeswitchcdr.db",
+  # sqlite_db: "/tmp/new_fscdr_db.db",
   # ms Time between fetchs (in millisecond)
   tick_frequency: 200,
   # Amount of CDRs to fetch every tick_frequency
