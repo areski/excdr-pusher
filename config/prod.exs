@@ -26,14 +26,11 @@ config :logger, :debug_log,
 # metadata: [:file, :line]
 
 config :excdr_pusher,
-  # Collect from
   sqlite_db: "/var/lib/freeswitch/db/freeswitchcdr.db",
-  # ms Time between fetchs (in millisecond)
+  # heartbeat in ms
   tick_frequency: 20,
-  # Amount of CDRs to fetch every tick_frequency
+  # Amount of CDRs to fetch
   amount_cdr_fetch: 10,
-  # 10 -> 250 CDRs per second (it's enough for one server)
-  # 20 -> 500 CDRs per second -> 30.000 per minute
   enable_billing: true
 
 # Push to

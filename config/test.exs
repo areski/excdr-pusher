@@ -15,22 +15,15 @@ config :logger, :error_log,
   level: :warn,
   format: "$date $time $metadata[$level] $levelpad$message\n"
 
-# metadata: [:file, :line]
-
 # configuration for the {LoggerFileBackend, :debug_log} backend
 config :logger, :debug_log,
   path: "/tmp/debug.log",
   level: :info,
   format: "$date $time $metadata[$level] $levelpad$message\n"
 
-# metadata: [:file, :line]
-
 config :excdr_pusher,
-  # Collect from
   sqlite_db: "./data/freeswitchcdr-test.db",
-  # ms Time between fetchs (in millisecond)
   tick_frequency: 1000,
-  # Amount of CDRs to fetch every 0.1 second
   amount_cdr_fetch: 1,
   enable_billing: true
 
