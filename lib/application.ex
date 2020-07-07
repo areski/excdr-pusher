@@ -16,10 +16,12 @@ defmodule ExCdrPusher.Application do
       supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
       worker(PusherPG, [0]),
-      worker(Biller, [])
-      # `Sqlitex.Server` is not used as it's not possible to catch errors on
-      # reading / opening the database
-      # worker(Sqlitex.Server, [Application.fetch_env!(:excdr_pusher, :sqlite_db), [name: Sqlitex.Server]]),
+      worker(Biller, []),
+      # `Sqlitex.Server` is not used as it's not possible to catch opening db errors
+      worker(Sqlitex.Server, [
+        Application.fetch_env!(:excdr_pusher, :sqlite_db),
+        [name: Sqlitex.DB]
+      ])
     ]
 
     opts = [
@@ -40,6 +42,7 @@ defmodule ExCdrPusher.Application do
     app_version = List.to_string(vsn)
     {_, _, ex_ver} = List.keyfind(:application.which_applications(), :elixir, 0)
     erl_version = :erlang.system_info(:otp_release)
+    sqlite_db = Application.fetch_env!(:excdr_pusher, :sqlite_db)
 
     Logger.error("========================================================")
 
@@ -50,5 +53,6 @@ defmodule ExCdrPusher.Application do
 
     tick_freq = Application.fetch_env!(:excdr_pusher, :tick_frequency)
     Logger.error("[config] tick_freq:#{tick_freq}")
+    Logger.error("[sqlite_db: #{sqlite_db}]")
   end
 end
