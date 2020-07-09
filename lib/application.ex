@@ -16,12 +16,12 @@ defmodule ExCdrPusher.Application do
       supervisor(ExCdrPusher.Repo, []),
       worker(Collector, [[], [name: MyCollector]]),
       worker(PusherPG, [0]),
-      worker(Biller, []),
+      worker(Biller, [])
       # `Sqlitex.Server` is not used as it's not possible to catch opening db errors
-      worker(Sqlitex.Server, [
-        Application.fetch_env!(:excdr_pusher, :sqlite_db),
-        [name: Sqlitex.DB]
-      ])
+      # worker(Sqlitex.Server, [
+      #   Application.fetch_env!(:excdr_pusher, :sqlite_db),
+      #   [name: Sqlitex.DB]
+      # ])
     ]
 
     opts = [
