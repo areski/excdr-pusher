@@ -142,8 +142,6 @@ defmodule ExCdrPusher.Utils do
         [487, billsec]
 
       hangup_cause_q850 == 16 and billsec == 0 and hangup_cause == "NORMAL_CLEARING" ->
-        # We will mark those calls as rejected
-        # [21, billsec]
         # Now we will set those call at 1 second as they have been answered
         [16, 1]
 
