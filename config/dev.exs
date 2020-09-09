@@ -37,7 +37,7 @@ config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
 
 config :excdr_pusher, ExCdrPusher.Repo,
   url: "postgres://postgres:password@localhost/newfiesdb",
-  pool_size: 10
+  pool_size: 2
 
 # If you need to load configuration from the environment at runtime, you will
 # need to do something like the following:

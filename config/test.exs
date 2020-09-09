@@ -32,5 +32,5 @@ config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
 
 config :excdr_pusher, ExCdrPusher.Repo,
   url: "postgres://postgres:password@localhost/newfiesdb",
-  pool_size: 10,
+  pool_size: 5,
   pool: Ecto.Adapters.SQL.Sandbox

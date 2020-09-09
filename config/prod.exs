@@ -38,4 +38,4 @@ config :excdr_pusher, ecto_repos: [ExCdrPusher.Repo]
 
 config :excdr_pusher, ExCdrPusher.Repo,
   url: "postgres://DBUSERNAME:DBPASSWORD@DBHOST/DBNAME",
-  pool_size: 10
+  pool_size: 5
